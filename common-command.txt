@@ -1,0 +1,27 @@
+php artisan make:model \Admin\Unit -m
+php artisan make:factory BrandFactory --model=Brand
+
+php artisan make:model HouseKeepingRadio -mcr
+
+php artisan tinker
+Brand::factory()->count(10)->create()
+
+php artisan migrate:refresh --path=/database/migrations/2014_10_12_000000_create_users_table.php
+
+php artisan make:migration create_home_services_table
+php artisan make:migration create_messages_table
+
+
+ $base_uri = config('app.url');
+        $data = DB::table('products')
+            ->select('products.id as pid', 'products.title as ptitle',  'products.price as p_price', 'products.categoryid as pcat_id', 'products.picture1', 'products.picture2', 'products.picture3', 'products.picture4', 'products.picture5', 'products.default_picture')
+            ->join('categories', 'products.categoryid', '=', 'categories.id')
+            ->where('products.categoryid', $id)
+            ->limit(10)->get();
+            $num = 1;
+            $productImg = array();
+            foreach($data as $pImg) {
+                $pImg->images = $base_uri.'/images/products/' . ceil($pImg->pid/1000) ."/{$pImg->pid}-{$num}-sm." . '.'.$pImg->picture1;
+                $productImg[] = (array) $pImg;
+            }
+            $data = $productImg;

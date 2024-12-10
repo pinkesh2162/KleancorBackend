@@ -1,0 +1,14 @@
+[24-May-2024 16:01:56 UTC] PHP Warning:  title_filter(): Argument #2 ($wp_query) must be passed by reference, value given in /home/wpmarts1/public_html/wp-includes/class-wp-hook.php on line 324
+[24-May-2024 16:01:56 UTC] PHP Warning:  title_filter(): Argument #2 ($wp_query) must be passed by reference, value given in /home/wpmarts1/public_html/wp-includes/class-wp-hook.php on line 324
+[24-May-2024 16:02:04 UTC] PHP Warning:  title_filter(): Argument #2 ($wp_query) must be passed by reference, value given in /home/wpmarts1/public_html/wp-includes/class-wp-hook.php on line 324
+[24-May-2024 16:02:04 UTC] PHP Warning:  title_filter(): Argument #2 ($wp_query) must be passed by reference, value given in /home/wpmarts1/public_html/wp-includes/class-wp-hook.php on line 324
+[24-May-2024 16:02:04 UTC] PHP Warning:  title_filter(): Argument #2 ($wp_query) must be passed by reference, value given in /home/wpmarts1/public_html/wp-includes/class-wp-hook.php on line 324
+[25-May-2024 04:29:09 UTC] PHP Parse error:  Unmatched '}' in /home/wpmarts1/public_html/wp-content/themes/wpmart-portfolio-theme/functions.php on line 149
+[25-May-2024 04:29:46 UTC] PHP Parse error:  Unmatched '}' in /home/wpmarts1/public_html/wp-content/themes/wpmart-portfolio-theme/functions.php on line 149
+[25-May-2024 04:32:01 UTC] PHP Parse error:  Unmatched '}' in /home/wpmarts1/public_html/wp-content/themes/wpmart-portfolio-theme/functions.php on line 150
+[25-May-2024 04:32:52 UTC] PHP Parse error:  Unmatched '}' in /home/wpmarts1/public_html/wp-content/themes/wpmart-portfolio-theme/functions.php on line 144
+[25-May-2024 04:33:51 UTC] PHP Parse error:  Unmatched '}' in /home/wpmarts1/public_html/wp-content/themes/wpmart-portfolio-theme/functions.php on line 150
+[25-May-2024 04:34:03 UTC] PHP Parse error:  Unmatched '}' in /home/wpmarts1/public_html/wp-content/themes/wpmart-portfolio-theme/functions.php on line 150
+[25-May-2024 04:34:49 UTC] PHP Parse error:  Unmatched '}' in /home/wpmarts1/public_html/wp-content/themes/wpmart-portfolio-theme/functions.php on line 142
+[03-Jun-2024 07:20:09 UTC] PHP Parse error:  syntax error, unexpected variable "$table_prefix" in /home/wpmarts1/public_html/wp-config.php on line 68
+[03-Jun-2024 07:22:10 UTC] PHP Parse error:  syntax error, unexpected variable "$table_prefix" in /home/wpmarts1/public_html/wp-config.php on line 68

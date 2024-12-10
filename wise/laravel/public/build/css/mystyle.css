@@ -1,0 +1,5 @@
+#add-challan, .delete-challan{
+  cursor: pointer;
+  font-size:  12px;
+  margin-left: 10px;
+}

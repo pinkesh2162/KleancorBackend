@@ -1,0 +1,10 @@
+ In transaction table
+      
+    Type 1 -> Credit(Deposit)
+    Type 2 -> Debit(Expense)
+    Type 3 -> Transfer from one account to another
+    Type 4 -> Employee Credit(Deposit)
+    Type 5 -> Employee Expenses(Expense)
+
+    //Bank Info
+    Bank id 0 -> Cash

@@ -1,0 +1,48 @@
+/* Blocks => custom-block => editor.css */
+
+/* Container for the block */
+.wp-block-wpmart-portfolio-block {
+  padding: 16px;
+  border: 1px solid #e2e4e7;
+  background-color: #f8f9fa;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Block title inside the editor */
+.wp-block-wpmart-portfolio-block .block-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #23282d;
+}
+
+/* Block description inside the editor */
+.wp-block-wpmart-portfolio-block .block-description {
+  font-size: 16px;
+  color: #737373;
+}
+
+/* Block images or other media */
+.wp-block-wpmart-portfolio-block .block-media {
+  width: 100%;
+  max-width: 550px;
+  margin: 16px 0;
+}
+
+/* Any buttons or interactive elements inside the block */
+.wp-block-wpmart-portfolio-block .block-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #0073aa;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.wp-block-wpmart-portfolio-block .block-button:hover,
+.wp-block-wpmart-portfolio-block .block-button:focus {
+  background-color: #005177;
+}

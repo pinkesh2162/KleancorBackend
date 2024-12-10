@@ -1,0 +1,12 @@
+[25-May-2024 23:22:14 UTC] PHP Fatal error:  Uncaught Error: Class "WP_Widget" not found in /home/wpmarts1/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/wpmarts1/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17
+[26-May-2024 13:54:37 UTC] PHP Fatal error:  Uncaught Error: Class "WP_Widget" not found in /home/wpmarts1/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/wpmarts1/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17
+[28-May-2024 21:03:43 UTC] PHP Fatal error:  Uncaught Error: Class "WP_Widget" not found in /home/wpmarts1/public_html/wp-includes/widgets/class-wp-widget-block.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/wpmarts1/public_html/wp-includes/widgets/class-wp-widget-block.php on line 17

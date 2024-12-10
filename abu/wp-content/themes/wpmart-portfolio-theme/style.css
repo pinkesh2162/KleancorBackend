@@ -1,0 +1,1393 @@
+/*
+Theme Name: WpMart Portfolio Theme
+Theme URI: https://wpmart.com/themes/wpmart-portfolio
+Author: WpMart
+Author URI: https://wpmart.com
+Description: A sleek and modern portfolio theme designed by WpMart. Perfect for showcasing your work.
+Version: 1.0
+Requires at least: 5.0
+Requires PHP: 7.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: wpmart-portfolio
+Tags: portfolio, modern, responsive, photography
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans");
+
+:root {
+  --wp--preset--color--primary: #0a2647;
+  --wp--preset--color--secondary: #144272;
+  --wp--preset--color--button: #205295;
+  --wp--preset--color--button--hover: #1e5daf;
+  --wp--preset--color--text: #0f2c59;
+  --wp--preset--color--link: #2c74b3;
+  --wp--preset--color--white: #ffffff;
+  --wp--preset--color--section--background: #efefef;
+  --wp--preset--color--box--shadow: #efefef;
+  --wp--preset--color--text--gray--300: #9ba4b5;
+  --wp--preset--color--text--gray--900: #212a3e;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Nunito Sans", sans-serif;
+  line-height: 1.6;
+  font-size: 16px;
+  color: var(--wp--preset--color--text);
+}
+
+a {
+  text-decoration: none;
+  color: var(--wp--preset--color--link);
+}
+
+a:hover {
+  color: var(--wp--preset--color--link);
+}
+
+.site-header {
+  background-color: var(--wp--preset--color--secondary);
+  color: var(--wp--preset--color--white);
+  padding: 1em 0;
+  text-align: center;
+}
+
+.site-title a {
+  color: var(--wp--preset--color--white);
+}
+
+.site-footer {
+  background-color: var(--wp--preset--color--section--background);
+  padding: 1em 0;
+  text-align: center;
+  width: 100%;
+  float: left;
+}
+
+.wpmart-pt-wrapper {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+.wpmart-pt-view-demo {
+  cursor: help;
+}
+
+.wpmart-pt-sticky-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--wp--preset--color--white);
+  padding: 0px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 0 7px 0px var(--wp--preset--color--box--shadow);
+}
+
+.wpmart-pt-menu ul {
+  list-style: none;
+  display: flex;
+}
+
+.wpmart-pt-menu a {
+  text-decoration: none;
+  color: var(--wp--preset--color--text);
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.wpmart-pt-menu a:hover {
+  color: var(--wp--preset--color--secondary);
+}
+
+.wpmart-pt-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  /* height: calc(100% - 66px); */
+  height: 90vh;
+  overflow: hidden;
+}
+
+.wpmart-pt-banner::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.wpmart-pt-banner img {
+  max-width: 100%;
+  height: 100%;
+  float: left;
+  width: 100%;
+}
+
+.wpmart-pt-menu li {
+  margin-right: 50px;
+  position: relative;
+}
+
+.wpmart-pt-menu li:hover a {
+  color: var(--wp--preset--color--secondary);
+}
+
+.wpmart-pt-menu li:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: var(--wp--preset--color--secondary);
+  transition: width 0.3s;
+}
+
+.wpmart-pt-menu li:hover:after,
+.wpmart-pt-menu li.wpmart-pt-active:after {
+  width: 100%;
+}
+
+/* mobile menu */
+
+.wpmart-pt-mobile-menu {
+  display: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0;
+  transform: translateY(-100%);
+  text-align: center;
+}
+
+.wpmart-pt-mobile-menu li {
+  margin: 8px;
+}
+.wpmart-pt-mobile-menu li a {
+  color: var(--wp--preset--color--text);
+}
+.wpmart-pt-mobile-menu-visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.wpmart-pt-mobile-menu-button {
+  cursor: pointer;
+  display: none;
+}
+
+#site-navigation {
+  width: 50%;
+  float: right;
+  text-align: right;
+  display: flex;
+  justify-content: right;
+}
+#mobileMenu {
+  position: absolute;
+  background: var(--wp--preset--color--secondary);
+  list-style: none;
+  right: 0;
+  top: 70px;
+  padding-right: 10px;
+  text-align: right;
+  width: 100%;
+  box-shadow: var(--wp--preset--color--box--shadow) 0px 1px 3px,
+    var(--wp--preset--color--box--shadow) 0px 1px 2px;
+}
+#mobileMenu ul {
+  list-style: none;
+}
+#mobileMenu ul li a {
+  color: var(--wp--preset--color--white);
+}
+
+@media (max-width: 768px) {
+  .wpmart-pt-banner {
+    height: 50vw;
+  }
+  #site-navigation {
+    display: none;
+  }
+
+  .wpmart-pt-custom-col-2:nth-child(odd),
+  .wpmart-pt-custom-col-2:nth-child(even) {
+    margin: 25px 0 auto;
+    width: 100%;
+  }
+  nav.wpmart-pt-mobile-menu.wpmart-pt-mobile-menu-visible {
+    top: 88px;
+  }
+  .wpmart-pt-ext-margin {
+    margin: 20px !important;
+    width: calc(100% - 40px) !important;
+  }
+  .mobile-hide-section {
+    display: none !important;
+  }
+  .wpmart-pt-col-content {
+    margin-left: 0 !important;
+    padding: 20px;
+  }
+  .wpmart-pt-logo img {
+    height: auto;
+  }
+  .wpmart-pt-menu {
+    display: none;
+    /* Hide the desktop menu on mobile screens */
+  }
+  .wpmart-pt-mobile-menu-button {
+    display: flex;
+    float: left;
+    text-align: right;
+    align-items: center;
+    justify-content: right;
+  }
+}
+@media (max-width: 425px) {
+  #mobileMenu {
+    top: 96%;
+  }
+  #site-navigation {
+    display: none;
+  }
+}
+/* banner content */
+.wpmart-pt-banner-content {
+  position: absolute;
+  color: var(--wp--preset--color--white);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.wpmart-pt-banner .wpmart-pt-col {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.wpmart-pt-col-content {
+  text-align: left;
+  font-size: 45px;
+  color: var(--wp--preset--color--secondary);
+  margin-left: 156px;
+  font-weight: 800;
+}
+
+.wpmart-pt-col-content-desc {
+  font-size: 18px;
+  margin: 15px 0;
+  color: var(--wp--preset--color--white);
+  line-height: 27px;
+  text-align: justify;
+  font-weight: 100;
+}
+
+.wpmart-pt-about-btn a {
+  background: var(--wp--preset--color--button);
+  color: var(--wp--preset--color--white);
+  padding: 10px 25px;
+  font-size: 20px;
+  transition: 0.3s;
+  display: inline-block;
+}
+
+.wpmart-pt-about-btn a:hover {
+  background: var(--wp--preset--color--button--hover);
+}
+
+.wpmart-pt-about-title,
+.wpmart-pt-achievment-title,
+.wpmart-pt-project-title {
+  font-weight: 700;
+  letter-spacing: 5px;
+  font-size: 30px;
+  color: var(--wp--preset--color--secondary);
+  padding: 40px 20px;
+  float: left;
+  width: 100%;
+  line-height: 40px;
+  text-align: left;
+  background: var(--wp--preset--color--section--background);
+  box-sizing: border-box;
+  box-shadow: 0 3px 8px 0px var(--wp--preset--color--box--shadow);
+}
+.wpmart-pt-margin-top {
+  float: left;
+  width: 100%;
+}
+
+.wpmart-pt-custom-row {
+  display: flex;
+  float: left;
+  width: 100%;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.wpmart-pt-custom-col {
+  width: calc(50% - 40px);
+  float: left;
+  margin: 10px;
+  line-height: 25px;
+  font-size: 17px;
+  text-align: justify;
+}
+.wpmart-pt-project-subtitle {
+  color: var(--wp--preset--color--text--gray--300);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.wpmart-pt-about-subtitle {
+  color: var(--wp--preset--color--text--gray--900);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.wpmart-pt-about-sec-title {
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--wp--preset--color--text);
+  font-size: 16px;
+}
+.wpmart-pt-about-sec-title a {
+  color: var(--wp--preset--color--text);
+  display: block;
+  float: left;
+}
+.wpmart-pt-custom-font-size {
+  font-size: 18px;
+}
+
+.wpmart-pt-custom-font-size-2 {
+  font-size: 14px;
+}
+
+.wpmart-pt-custom-color {
+  color: var(--wp--preset--color--secondary);
+}
+
+.wpmart-pt-custom-color-gray {
+  color: #474747;
+}
+
+.wpmart-pt-custom-color-darkgray {
+  color: #5d5d5d;
+}
+
+.wpmart-pt-achievment-section {
+  float: left;
+  width: 100%;
+  text-align: center;
+}
+
+.wpmart-pt-counter-wrapper {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 50px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.wpmart-pt-about-wrapper {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.wpmart-pt-counter {
+  width: calc(33.333% - 30px);
+  float: left;
+  text-align: center;
+  margin: 15px;
+  box-sizing: border-box;
+  padding: 20px;
+  box-shadow: 0 0 5px 0 var(--wp--preset--color--box--shadow);
+}
+
+.wpmart-pt-conter-number {
+  font-size: 60px;
+  line-height: 60px;
+  color: var(--wp--preset--color--primary);
+}
+
+.wpmart-pt-conter-title {
+  font-size: 20px;
+  color: var(--wp--preset--color--secondary);
+  letter-spacing: 3px;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.wpmart-pt-ext-margin {
+  margin: 80px;
+  float: left;
+  width: calc(100% - 160px);
+}
+
+.wpmart-pt-details-area {
+  margin: 0 80px;
+  float: left;
+  width: calc(100% - 160px);
+}
+
+.wpmart-pt-project-wrapper {
+  float: left;
+  width: 100%;
+}
+
+.wpmart-pt-custom-desc-style {
+  font-size: 17px;
+  float: left;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: justify;
+}
+
+.wpmart-pt-porject-wrapper {
+  float: left;
+  width: 100%;
+}
+
+.wpmart-pt-project-section {
+  display: flex;
+  float: left;
+  width: 100%;
+}
+
+.wpmart-pt-img-content-wrapper {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+  justify-content: space-between;
+  float: left;
+}
+
+.wpmart-pt-hover-img {
+  position: relative;
+  float: left;
+  overflow: hidden;
+  transition: 0.3s;
+  width: 100%;
+}
+
+.wpmart-pt-hover-img img {
+  width: 100%;
+  float: left;
+  transition: 0.3s;
+  height: 100%;
+}
+
+.wpmart-pt-project-container {
+  width: calc(33.333% - 20px);
+  margin: 10px;
+  float: left;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.wpmart-pt-project-img-link-content {
+  background: #00000045;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+}
+
+.wpmart-pt-icon {
+  background: var(--wp--preset--color--secondary);
+  margin: 0.5px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--wp--preset--color--white);
+  cursor: pointer;
+  transition: 0.3s;
+  opacity: 0;
+}
+.wpmart-pt-icon a i {
+  color: var(--wp--preset--color--white);
+}
+.wpmart-pt-icon:hover i {
+  color: var(--wp--preset--color--button) !important;
+}
+
+/* .wpmart-pt-icon a i:hover {
+  color: var(--wp--preset--color--button) !important;
+} */
+
+.wpmart-pt-icon:hover {
+  background: var(--wp--preset--color--white);
+  color: var(--wp--preset--color--secondary);
+}
+
+.wpmart-pt-project-img-link-content:hover .wpmart-pt-icon {
+  opacity: 1;
+}
+
+.wpmart-pt-project-img-link-content-wrapper {
+  float: left;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  align-items: center;
+  cursor: pointer;
+}
+
+i.wpmart-pt-fa-solid.wpmart-pt-fa-heart.wpmart-pt-show-on-hover {
+  display: none;
+}
+
+.wpmart-pt-hover-icon {
+  display: flex;
+  cursor: pointer;
+}
+
+.wpmart-pt-hover-icon:hover
+  i.wpmart-pt-fa-solid.wpmart-pt-fa-heart.wpmart-pt-show-on-hover {
+  display: block;
+}
+
+.wpmart-pt-hover-icon:hover
+  i.wpmart-pt-fa-regular.wpmart-pt-fa-heart.wpmart-pt-hide-on-hover {
+  display: none;
+}
+
+.wpmart-pt-footer-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  float: left;
+  margin-bottom: 25px;
+}
+
+.wpmart-pt-footer-font-size {
+  font-size: 12px;
+}
+
+.wpmart-pt-footer-icon-wrapper span {
+  background: #bdbdbd;
+  width: 30px;
+  height: 30px;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--wp--preset--color--white);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.wpmart-pt-footer-icon-wrapper span:hover {
+  background: #9b1c1c;
+}
+
+.wpmart-pt-bg-image {
+  background-image: url(./img/banner.jpg);
+  object-fit: cover;
+  float: left;
+  width: 100%;
+  position: relative;
+  z-index: 111;
+}
+
+.wpmart-pt-bg-image::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--wp--preset--color--white);
+  z-index: -1;
+}
+
+#zoomableImage {
+  transition: transform 0.3s;
+}
+
+#zoomableImage.zoomed {
+  transform: scale(3);
+}
+
+.wpmart-pt-custom-row-2 {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.wpmart-pt-custom-col-2:nth-child(odd) {
+  margin-left: 0;
+}
+.wpmart-pt-custom-col-2:nth-child(even) {
+  margin-right: 0;
+}
+
+.wpmart-pt-latest-work-title {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 700;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.wpmart-pt-ext-margin-top {
+  margin-top: 30px;
+}
+
+.wpmart-pt-custom-progress-bar {
+  float: left;
+  width: 100%;
+  position: relative;
+  height: 8px;
+  background: #e4e4e4;
+}
+.wpmart-pt-progress-bar-value {
+  position: absolute;
+  height: 100%;
+  background-color: var(--wp--preset--color--secondary);
+  animation: fillProgress 1s;
+}
+
+@keyframes fillProgress {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%; /* You can change this to represent actual progress */
+  }
+}
+
+.wpmart-pt-progress-bar-title {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+
+span.wpmart-pt-custom-tooltip {
+  background: #fff;
+  padding: 0px 10px;
+  font-size: 13px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wpmart-pt-progress-bar {
+  float: left;
+  width: 100%;
+  margin-top: 15px;
+  box-shadow: 0 0px 8px 0px var(--wp--preset--color--box--shadow);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.wpmart-pt-other-info {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  position: relative;
+  padding: 15px 10px;
+}
+
+.wpmart-pt-other-info::after {
+  content: "";
+  position: absolute;
+  width: 13%;
+  height: 1px;
+  background: #939393;
+  left: 0;
+  bottom: 0;
+}
+
+.wpmart-pt-other-info-wrapper {
+  float: left;
+  width: 100%;
+  display: flex;
+}
+
+.wpmart-pt-custom-col-2 {
+  width: calc(50% - 20px);
+  float: left;
+  margin: 10px;
+  box-shadow: 0 0 5px 0 #cfcfcf;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.wpmart-pt-hover-img:hover img {
+  transform: scale(1.1);
+}
+
+.wpmart-pt-arrow-icons {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wpmart-pt-arrow-icons span {
+  width: 50px;
+  height: 50px;
+  background: #ffffff82;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin: 0 5px;
+  z-index: 1;
+  font-size: 20px;
+}
+
+.wpmart-pt-arrow-icons span:hover {
+  background: #ffffff;
+}
+
+.wpmart-pt-hover-color:hover {
+  color: #ff5722;
+}
+
+.wpmart-pt-margin-bottom {
+  margin-bottom: 30px;
+}
+
+.wpmart-pt-footer-main {
+  float: left;
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.wpmart-pt-logo {
+  float: left;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .mobile-hide-section {
+    display: none !important;
+  }
+
+  .wpmart-pt-banner-content {
+    background: #0000004f;
+    padding: 20px;
+    float: left;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .wpmart-pt-col-content {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .wpmart-pt-banner {
+    height: auto;
+  }
+  .wpmart-pt-banner-content {
+    display: none;
+  }
+  .wpmart-pt-project-category-filter-item {
+    padding: 5px 10px;
+    float: left;
+    width: 100%;
+  }
+  .wpmart-pt-logo img {
+    width: 100%;
+    float: left;
+  }
+  .wpmart-pt-logo {
+    float: left;
+    width: 50%;
+  }
+  .wpmart-pt-col.mobile-hide-section {
+    display: none;
+  }
+  .wpmart-pt-about-title,
+  .wpmart-pt-achievment-title,
+  .wpmart-pt-project-title {
+    font-size: 20px;
+    text-align: center;
+    padding: 10px;
+    letter-spacing: 0px;
+  }
+
+  .wpmart-pt-col-content {
+    margin: 0;
+    text-align: center;
+    padding: 0 10px;
+  }
+
+  /* .wpmart-pt-banner img {
+    height: 60vh;
+  } */
+
+  .wpmart-pt-ext-margin {
+    margin: 20px;
+    text-align: center;
+    width: calc(100% - 40px);
+  }
+
+  .wpmart-pt-custom-col {
+    width: 100%;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .wpmart-pt-about-sec-title {
+    margin-top: 15px;
+  }
+
+  .wpmart-pt-counter-wrapper,
+  .wpmart-pt-margin-top,
+  .wpmart-pt-achievment-section {
+    margin-top: 20px;
+  }
+
+  .wpmart-pt-project-wrapper {
+    margin: 15px 0;
+  }
+
+  .wpmart-pt-custom-col-2:nth-child(odd),
+  .wpmart-pt-custom-col-2:nth-child(even) {
+    margin: 25px 0 auto;
+    width: 100%;
+  }
+
+  .wpmart-pt-counter {
+    width: calc(100% - 40px);
+    margin: 20px;
+  }
+
+  .wpmart-pt-project-container {
+    width: calc(100% - 20px);
+  }
+
+  .wpmart-pt-project-section {
+    display: block;
+  }
+
+  .wpmart-pt-custom-row-2 {
+    display: block;
+  }
+
+  .wpmart-pt-other-info-wrapper {
+    display: block;
+  }
+
+  .wpmart-pt-other-info {
+    width: 100%;
+  }
+
+  .wpmart-pt-custom-row {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .wpmart-pt-custom-col-3 {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .wpmart-pt-custom-col-3:last-child {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+  }
+}
+
+.wpmart-pt-project-category-filter a.active {
+  color: var(--wp--preset--color--white);
+  background: var(--wp--preset--color--primary);
+}
+.wpmart-pt-filter-list {
+  display: flex;
+  float: left;
+  width: 100%;
+  list-style: none;
+  margin-bottom: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.wpmart-pt-project-category-filter-item {
+  background-color: var(--wp--preset--color--secondary);
+  color: var(--wp--preset--color--white);
+  padding: 10px 20px;
+  margin: 5px;
+  transition: 0.5s;
+}
+.wpmart-pt-project-category-filter-item:hover {
+  background: var(--wp--preset--color--button);
+  color: var(--wp--preset--color--white);
+}
+
+.wpmart-pt-section-anchor {
+  display: block;
+  position: relative;
+  top: -200px;
+  visibility: hidden;
+}
+.wpmart-pt-sticky-header-wrapper {
+  width: 100%;
+  float: left;
+  position: relative;
+}
+.post-thumbnail {
+  float: left;
+  width: 100%;
+}
+.post-thumbnail img {
+  width: 100%;
+  float: left;
+  height: 70vh;
+}
+.entry-content.details-page {
+  float: left;
+  width: 100%;
+  margin-top: 20px;
+}
+footer.entry-footer {
+  float: left;
+  width: 100%;
+  margin-top: 20px;
+}
+nav.navigation.post-navigation {
+  float: left;
+  width: 100%;
+  margin-top: 20px;
+  text-align: right;
+}
+#mobileMenuButton a {
+  color: black;
+}
+
+/* main details content */
+.wpmart-pt-details-ext-margin {
+  margin: 80px;
+  margin-top: 20px;
+  float: left;
+  width: calc(100% - 160px);
+}
+.wpmart-pt-details-icon-btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+  float: left;
+  width: 100%;
+}
+.wpmart-pt-details-icon-btn-wrapper a {
+  font-size: 18px;
+  color: gray;
+  transition: 0.5s;
+}
+.wpmart-pt-details-icon-btn-wrapper a:hover {
+  color: darkgray;
+}
+.wpmart-pt-details-publish-info {
+  float: left;
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: gray;
+}
+.wpmart-pt-details-category select {
+  border: 0;
+  color: gray;
+  font-size: 13px;
+}
+.wpmart-pt-details-category select:focus {
+  outline: 0;
+}
+.wpmart-pt-details-publish-data a {
+  color: #b76e2a;
+}
+
+.wpmart-pt-details-banner {
+  float: left;
+  width: 100%;
+  margin-top: 30px;
+}
+.wpmart-pt-details-banner img {
+  float: left;
+  width: 100%;
+  height: 70vh;
+}
+.wpmart-pt-details-client {
+  float: left;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.wpmart-pt-details-client-wrapper {
+  float: left;
+  width: 100%;
+  display: flex;
+  font-size: 14px;
+  margin-top: 30px;
+}
+.wpmart-pt-details-client-title {
+  margin-right: 10px;
+  font-weight: 700;
+  color: black;
+}
+.wpmart-pt-details-client-sub-title {
+  color: gray;
+}
+.wpmart-pt-details-client-wrapper:nth-child(2) {
+  justify-content: center;
+}
+.wpmart-pt-details-client-wrapper:nth-child(3) {
+  justify-content: right;
+}
+.wpmart-pt-details-client-wrapper:nth-child(3)
+  .wpmart-pt-details-client-sub-title
+  a {
+  color: #b76e2a;
+}
+.wpmart-pt-details-tast-title {
+  margin-top: 30px;
+  float: left;
+  width: 100%;
+}
+
+.wpmart-pt-details-tast-title strong {
+  color: black;
+  text-transform: capitalize;
+}
+.wpmart-pt-details-custom-three-col {
+  float: left;
+  width: 100%;
+  display: flex;
+  margin-top: 30px;
+}
+.wpmart-pt-details-col-1 {
+  width: 80%;
+}
+.wpmart-pt-details-col-1 p {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 27px;
+  text-align: justify;
+  padding: 10px 0;
+}
+.wpmart-pt-details-col-2 {
+  width: 20%;
+}
+.wpmart-pt-details-col-1,
+.wpmart-pt-details-col-2 {
+  float: left;
+}
+.wpmart-pt-details-col-2 {
+  margin: 0 30px;
+}
+
+.wpmart-pt-details-client-wrapper-2:nth-child(3)
+  .wpmart-pt-details-client-sub-title
+  a {
+  color: var(--wp--preset--color--primary);
+}
+.wpmart-pt-details-client-wrapper-2 {
+  margin-bottom: 10px;
+}
+.wpmart-pt-details-client-wrapper-2 .wpmart-pt-details-client-title {
+  font-size: 17px;
+}
+.wpmart-pt-details-client-wrapper-2 .wpmart-pt-details-client-sub-title {
+  font-size: 15px;
+  margin-top: 5px;
+}
+
+#wpmart-pt-home-banner,
+#wpmart-pt-summary-about-me,
+#wpmart-pt-achievment,
+#wpmart-pt-project-wrapper-main,
+#wpmart-pt-skill-list,
+#wpmart-pt-project-client,
+#wpmart-pt-testimonials-section {
+  scroll-margin-top: 80px;
+}
+
+@media (max-width: 768px) {
+  .wpmart-pt-details-ext-margin {
+    margin: 20px;
+    width: calc(100% - 40px);
+  }
+  .wpmart-pt-details-col-1,
+  .wpmart-pt-details-col-2 {
+    width: 40%;
+  }
+  .wpmart-pt-details-col-3 {
+    width: 20%;
+  }
+}
+
+@media (max-width: 425px) {
+  .wpmart-pt-details-client {
+    flex-direction: column;
+  }
+  .wpmart-pt-details-client-wrapper:nth-child(2),
+  .wpmart-pt-details-client-wrapper:nth-child(3) {
+    justify-content: left;
+  }
+  .wpmart-pt-details-custom-three-col {
+    flex-direction: column;
+  }
+  .wpmart-pt-details-col-1,
+  .wpmart-pt-details-col-2,
+  .wpmart-pt-details-col-3 {
+    width: 100%;
+    margin: 20px 0 auto;
+  }
+}
+
+/* Modal Image */
+.wpmart-pt-modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--wp--preset--color--text--gray--900);
+}
+
+.wpmart-pt-modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 50vw;
+}
+
+.wpmart-pt-close {
+  position: absolute;
+  top: 10%;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.wpmart-pt-close:hover,
+.wpmart-pt-close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* 404 Page Not found */
+.wpmart-pt-not-found-container {
+  margin: 80px;
+  float: left;
+  width: calc(100% - 160px);
+}
+
+img.wpmart-pt-not-found {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wpmart-pt-btn1 {
+  text-align: center;
+}
+.wpmart-pt-text {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 40px;
+}
+.wpmart-pt-error-text {
+  text-align: center;
+  padding: 20px;
+  font-family: Cursive;
+}
+.wpmart-pt-error {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.5rem;
+  text-decoration: none;
+  padding: 15px;
+  background: var(--wp--preset--color--button);
+  color: #fff;
+  border-radius: 10px;
+}
+
+.wpmart-pt-error:hover {
+  color: var(--wp--preset--color--white);
+  background: var(--wp--preset--color--button--hover);
+}
+
+/* ------------------ 
+   Testimonial Section 
+   ------------------ */
+
+/* Base styles */
+.wpmart-pt-testimonial-section {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  float: left;
+}
+
+/* Testimonial Section Header */
+.wpmart-pt-testimonial-section header {
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: 5px;
+  line-height: 40px;
+  color: var(--wp--preset--color--secondary);
+  padding: 40px 20px;
+  text-align: left;
+  background: var(--wp--preset--color--section--background);
+  box-shadow: 0 3px 8px var(--wp--preset--color--box--shadow);
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wpmart-pt-testimonial-slider {
+  float: left;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.wpmart-pt-testimonial-wrapper {
+  float: left;
+  width: 100%;
+  padding: 10px;
+  margin-top: 70px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.wpmart-pt-testimonial-left-selection {
+  width: 300px;
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-top: -70px;
+  background: #fff;
+  position: absolute;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  text-align: center;
+}
+
+.wpmart-pt-testimonial-left-selection img {
+  float: left;
+  width: 100px;
+  border-radius: 50%;
+}
+
+.wpmart-pt-testimonial-right-selection {
+  float: left;
+  width: calc(100% - 73px);
+  min-height: 180px;
+  box-sizing: border-box;
+  margin-left: 73px;
+  background: #fff;
+  padding: 15px 15px 15px 240px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.wpmart-pt-testimonial-title {
+  float: left;
+  width: 100%;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 8px 0;
+  word-break: break-all;
+}
+
+.wpmart-pt-testimonial-rating {
+  float: left;
+  width: 100%;
+  display: flex;
+  font-size: 15px;
+  justify-content: center;
+  color: var(--wp--preset--color--primary);
+}
+
+.wpmart-pt-testimonial-img {
+  float: left;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.wpmart-pt-testimonial-description {
+  float: left;
+  width: 100%;
+  font-size: 14px;
+  color: #4e4e4e;
+}
+
+.wpmart-pt-testimonial-quote {
+  color: var(--wp--preset--color--primary);
+  font-size: 40px;
+}
+
+.wpmart-pt-right-testimonial-selection-ext-padding {
+  padding: 0 30px;
+}
+
+@media (max-width: 425px) {
+  .wpmart-pt-testimonial-wrapper {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    margin: 0 auto;
+  }
+
+  .wpmart-pt-testimonial-left-selection {
+    position: relative;
+    width: 100%;
+    box-shadow: none;
+    margin: 0 auto;
+  }
+
+  .wpmart-pt-testimonial-right-selection {
+    margin: 0 auto;
+    width: 100%;
+    padding: 10px;
+    box-shadow: none;
+  }
+}
