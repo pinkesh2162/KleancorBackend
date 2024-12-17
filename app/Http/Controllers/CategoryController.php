@@ -39,6 +39,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3|max:30',
+            'spanish_name' => 'required|min:3|max:30',
             'picture' => 'required',
             'commission' => 'required',
             'status' => 'required'          
@@ -80,6 +81,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3|max:30',
+            'spanish_name' => 'required|min:3|max:30',
             'picture' => 'required',
             'commission' => 'required',
             'status' => 'required'   
