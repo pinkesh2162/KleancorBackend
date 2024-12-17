@@ -60,6 +60,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        <label for="spanish_name" class="col-xl-3 col-md-4"><span>*</span>
+                                            Spanish Name</label>
+                                        <div class="col-md-7">
+                                            <input class="form-control" id="spanish_name" name="spanish_name" value="{{old('spanish_name')}}" type="text" required="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
                                         <label for="picture" class="col-xl-3 col-md-4"><span>*</span>Icon (Fontawesome Code)</label>
                                         <div class="col-md-7">
                                             <input class="form-control" id="picture" name="picture" value="{{old('picture')}}" type="text" required="">

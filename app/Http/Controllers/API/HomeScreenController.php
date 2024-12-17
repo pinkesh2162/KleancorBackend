@@ -36,7 +36,7 @@ class HomeScreenController extends Controller
 
     public function category(Request $request){
         $data['categoryList'] = DB::table("categories")
-        ->select('id','name', 'picture')
+            ->select('id', 'name', 'spanish_name', 'picture')
         ->where('status', 1)
         ->orderBy("serial", "asc")
         ->get();
@@ -91,7 +91,7 @@ class HomeScreenController extends Controller
 
      public function category_search($keyword) {
         $data = DB::table("categories")
-        ->select('id','name', 'picture')
+            ->select('id', 'name', 'spanish_name', 'picture')
         ->where('status', 1)
         ->where('name', 'like', "%{$keyword}%")
         ->orderBy("serial", "asc")

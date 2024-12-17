@@ -107,7 +107,7 @@ class ProfileController extends BaseController
     
     public function categories(request $request){
         $data = DB::table("categories")
-        ->select('id', 'name', 'status')
+            ->select('id', 'name', 'spanish_name', 'status')
         ->get();
         return response()->json($data);
     }
