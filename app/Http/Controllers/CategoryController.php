@@ -99,7 +99,13 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        $category->delete();
-        return redirect()->route('categories.index')->with('error', 'Service Delete Successfully!!');
+        try {
+            $category->delete();
+            return redirect()->route('categories.index')->with('error', 'Service Delete Successfully!!');
+            //code...
+        } catch (\Throwable $th) {
+            return redirect()->route('categories.index')->with('error', 'Service not allow to delete.');
+            //throw $th;
+        }
     }
 }

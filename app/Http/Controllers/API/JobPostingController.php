@@ -505,6 +505,8 @@ class JobPostingController extends BaseController // New Change
                 'users.skill_list',
                 'users.location_list',
                 'users.about',
+                'users.email',
+                'users.address',
                 'users.avatar as userImg',
                 'users.created_at',
                 'locations.name as locName',

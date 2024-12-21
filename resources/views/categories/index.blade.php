@@ -59,6 +59,7 @@
                         <tr>
                             <th>Service Name</th>
                             <th>Category Icon</th>
+                            <th>Spanish Name</th>
                             <th>Commission</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -73,6 +74,7 @@
                                     {{ $category->picture }}
                                 </div>
                             </td>
+                            <td>{{ $category->spanish_name }}</td>
                             <td>{{ $category->commission }} %</td>
 
                             @if($category->status == 1)
@@ -88,13 +90,10 @@
                             @endif
                             <td>
                                 <div>
-                                    <form action="{{ route('categories.destroy',$category->id) }}" method="POST">
-                                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                    <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>
 
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-trash"></i></button>
-                                    </form>
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary btn-sm" onclick="confirmDelete({{ $category->id }})"><i class="fa fa-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -106,4 +105,36 @@
     </div>
     <!-- Container-fluid Ends-->
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this category?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display:inline;">
+                <form action="{{ route('categories.destroy',$category->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger" >Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(categoryId) {
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = `/categories/${categoryId}`;
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        deleteModal.show();
+    }
+</script>
 @endsection
