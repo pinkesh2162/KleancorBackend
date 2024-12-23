@@ -17,4 +17,9 @@ class Category extends Model
         'commission', 
         'status'
     ];
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'category_skills');
+    }
 }

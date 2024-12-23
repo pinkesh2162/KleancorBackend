@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Skill;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -26,7 +27,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        $skills = Skill::all();
+        return view('categories.create', compact('skills'));
     }
 
     /**
@@ -42,9 +44,13 @@ class CategoryController extends Controller
             'spanish_name' => 'required|min:3|max:30',
             'picture' => 'required',
             'commission' => 'required',
-            'status' => 'required'          
+            'status' => 'required',
+            'skills' => 'required|array'
         ]);
-        Category::create($request->all());
+
+        $category = Category::create($request->all());
+        $category->skills()->sync($request->skills);
+
         return redirect()->route('categories.index')->with('message', 'Service Added Successfully!!');
     }
 
@@ -67,7 +73,8 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('categories.edit', compact('category'));
+        $skills = Skill::all();
+        return view('categories.edit', compact('category', 'skills'));
     }
 
     /**
@@ -84,10 +91,13 @@ class CategoryController extends Controller
             'spanish_name' => 'required|min:3|max:30',
             'picture' => 'required',
             'commission' => 'required',
-            'status' => 'required'   
+            'status' => 'required',
+            'skills' => 'required|array'
         ]);
   
         $category->update($request->all());
+        $category->skills()->sync($request->skills);
+
         return redirect()->route('categories.index')->with('message', 'Service Updated Successfully!!');
     }
 

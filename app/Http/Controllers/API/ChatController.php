@@ -7,9 +7,19 @@ use App\Models\Message;
 use App\Events\MessageSent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Notifications;
+use App\Services\FirebaseService;
+use App\Constants\NotificationTypes;
 
 class ChatController extends Controller
 {
+    protected $firebaseService;
+
+    public function __construct(FirebaseService $firebaseService)
+    {
+        $this->firebaseService = $firebaseService;
+    }
+
     public function sendMessage(Request $request)
     {
         
@@ -33,12 +43,50 @@ class ChatController extends Controller
         
         $result = DB::table('channels')->where('name', $request->channelId)->first();
 
+        $senderUser = DB::table('users')
+        ->select(
+            'first_name',
+            'last_name',
+            'fcm_token'
+        )
+        ->where('id', $request->sender_id)->first();
+
+        $reciverUser = DB::table('users')
+        ->select(
+            'first_name',
+            'last_name',
+            'fcm_token'
+        )
+        ->where('id', $request->receiver_id)->first();
+
+        $senderName = "";
+        if (isset($senderUser->first_name)) {
+            $senderName = trim(ucwords($senderUser->first_name . " " . $senderUser->last_name));
+        }
+        $title = $senderName . " Send A Message.";
+
         $message = Message::create([
             'message' => $request->message,
             'channel_id' => $result->id,
             'sender_id' =>  $request->sender_id,            
             'receiver_id' => $request->receiver_id
         ]);
+
+        $notification = Notifications::create([
+            'users_id' =>  $request->receiver_id,
+            'title' => $title,
+            'status' => 0,
+            'message' => $request->message,
+            'notification_type_id' => NotificationTypes::SEND_MESSAGE
+        ]);
+
+        if ($reciverUser->fcm_token != null) {
+            $deviceToken = $reciverUser->fcm_token;
+            $title = $title;
+            $body = $request->message;
+
+            $response = $this->firebaseService->sendNotification($deviceToken, $title, $body);
+        }
 
         return  $message;
     }

@@ -45,7 +45,6 @@ class ProfileController extends BaseController
         // $success = $request->userInput;
         // $success = '{"first_name":"sahed","last_name":"ahmed","address":"satkhira","about":"dfgdfghdfhdfhfhhfhhdfhdf","price":"1","expertise_label":"gewrtt","contact":"5325235","locations_id":"[{\"id\":5,\"name\":\"Missouri\",\"zip\":\"63001\"},{\"id\":7,\"name\":\"Nevada\",\"zip\":\"88901\"},{\"id\":2,\"name\":\"Pittsburgh\",\"zip\":\"15210\"}]","skills_id":"[{\"id\":4,\"name\":\"Painting\",\"status\":1},{\"id\":6,\"name\":\"Assembling\",\"status\":1}]"}';
         // $data = json_decode($success);
-        
         // echo "<pre>";
         // print_r($data);
         // die();

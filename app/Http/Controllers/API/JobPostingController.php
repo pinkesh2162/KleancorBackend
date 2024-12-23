@@ -11,13 +11,19 @@ use App\Models\Payment;
 use DateTime;
 use Mail;
 use DateTimeZone;
+use App\Models\Notifications;
+use App\Services\FirebaseService;
+use App\Constants\NotificationTypes;
 
 class JobPostingController extends BaseController // New Change
 {
     private $settings;
-    public function __construct()
+    protected $firebaseService;
+
+    public function __construct(FirebaseService $firebaseService)
     {
         $this->settings = DB::table('settings')->first();
+        $this->firebaseService = $firebaseService;
     }
     // public function index(Request $request)
     // {
@@ -177,7 +183,39 @@ class JobPostingController extends BaseController // New Change
             'users_id' => $data->userId
         ];
 
-        DB::table('applications')->insert($arr);
+        $applications = DB::table('applications')->insert($arr);
+
+        $userData = DB::table('users')->select('first_name', 'last_name')->where('id', $data->userId)->first();
+
+        $jobData = DB::table('jobs')
+        ->select(
+            'jobs.poster_id',
+            'jobs.title',
+            'users.fcm_token'
+        )
+            ->join('users', 'users.id', '=', 'jobs.poster_id')
+            ->where('jobs.id', $data->jobId)->first();
+
+        if (isset($jobData->fcm_token) && $jobData->fcm_token != null) {
+
+            $deviceToken = $jobData->fcm_token;
+            $title = 'New Job Application';
+            $body = $userData->first_name . ' ' . $userData->last_name . ' has applied for your job ' . $jobData->title;
+
+            $notification = Notifications::create([
+                'users_id' =>  $jobData->poster_id,
+                'title' => $title,
+                'status' => 0,
+                'message' => $body,
+                'notification_type_id' => NotificationTypes::NEW_JOB_APPLICATION
+            ]);
+
+            $response = $this->firebaseService->sendNotification($deviceToken, $title, $body);
+        }
+
+        return response()->json($applications);
+
+
     }
 
 
