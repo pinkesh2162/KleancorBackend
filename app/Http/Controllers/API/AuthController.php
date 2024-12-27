@@ -65,13 +65,16 @@ class AuthController extends BaseController
                         DB::table('referrals')->insert(['refer_id' => $user->id, 'referrer_id' => $code->id]);
                     }
                 }
+
                 try {
+                    \Log::info("try email if");
                     Mail::send('emails/new-user', ['user' => $user], function ($message) use ($user) {
                         $message->to($user['email'])->subject('Welcome to ' . config('app.name'));
                     });
                     Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
                         $message->to(config('app.admin_email'))->subject('New user register to ' . config('app.name'));
                     });
+                    \Log::info("email sent if");
                 } catch (\Throwable $th) {
                     \Log::info($th);
                 }
@@ -149,12 +152,14 @@ class AuthController extends BaseController
             }
 
             try {
+                \Log::info("try email else");
                 Mail::send('emails/new-user', ['user' => $user], function ($message) use ($user) {
                     $message->to($user['email'])->subject('Welcome to ' . config('app.name'));
                 });
                 Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
                     $message->to(config('app.admin_email'))->subject('New user register to ' . config('app.name'));
                 });
+                \Log::info("email sent else");
             } catch (\Throwable $th) {
                 \Log::info($th);
             }
