@@ -120,11 +120,11 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteForm" method="POST" style="display:inline;">
-                <form action="{{ route('categories.destroy',$category->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" >Delete</button>
-                </form>
+                    <form action="{{ route('categories.destroy',$category->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
             </div>
         </div>
     </div>

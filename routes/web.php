@@ -36,7 +36,7 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('admin');
 
-Route::group(['middleware' => ['auth', 'admin']], function () { 
+Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
     Route::resource('skills', SkillController::class);
@@ -48,45 +48,44 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::resource('users', UserController::class);
 });
 
-Route::get('send-mail', function () { 
+Route::get('send-mail', function () {
     $details = [
         'title' => 'Mail from Kleancor.com',
         'body' => 'This is for testing email using Gmail smtp'
-    ];   
+    ];
 
-    \Mail::to('codesdealbd@gmail.com')->send(new \App\Mail\SendInvoiceMail($details));   
+    \Mail::to('codesdealbd@gmail.com')->send(new \App\Mail\SendInvoiceMail($details));
 
     dd("Email is Sent.");
 });
 
 // Clear application cache:
-Route::get('/clear-cache', function() {
+Route::get('/clear-cache', function () {
     Artisan::call('cache:clear');
     return 'Application cache has been cleared';
 });
 
 //Clear route cache:
-Route::get('/route-cache', function() {
-	Artisan::call('route:cache');
-	Artisan::call('config:cache');
-	Artisan::call('view:clear');
+Route::get('/route-cache', function () {
+    Artisan::call('route:cache');
+    Artisan::call('config:cache');
+    Artisan::call('view:clear');
     return 'Routes cache has been cleared';
 });
 
 //Clear config cache:
-Route::get('/config-cache', function() {
- 	Artisan::call('config:cache');
- 	return 'Config cache has been cleared';
-}); 
+Route::get('/config-cache', function () {
+    Artisan::call('config:cache');
+    return 'Config cache has been cleared';
+});
 
 // Clear view cache:
-Route::get('/view-clear', function() {
+Route::get('/view-clear', function () {
     Artisan::call('view:clear');
     return 'View cache has been cleared';
 });
 
-Route::get('/updateapp', function()
-{
+Route::get('/updateapp', function () {
     exec('composer dump-autoload');
     echo 'composer dump-autoload complete';
 });
@@ -95,4 +94,3 @@ Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
     return 'Symlink Created';
 });
-

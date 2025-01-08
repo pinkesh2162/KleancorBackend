@@ -16,7 +16,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('id', 'desc')->get(); 
+        $categories = Category::orderBy('id', 'desc')->get();
         return view('categories.index', compact('categories'));
     }
 
@@ -94,7 +94,7 @@ class CategoryController extends Controller
             'status' => 'required',
             'skills' => 'required|array'
         ]);
-  
+
         $category->update($request->all());
         $category->skills()->sync($request->skills);
 

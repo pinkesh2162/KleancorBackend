@@ -14,6 +14,7 @@ use DateTimeZone;
 use App\Models\Notifications;
 use App\Services\FirebaseService;
 use App\Constants\NotificationTypes;
+use App\Models\Document;
 
 class JobPostingController extends BaseController // New Change
 {
@@ -25,48 +26,11 @@ class JobPostingController extends BaseController // New Change
         $this->settings = DB::table('settings')->first();
         $this->firebaseService = $firebaseService;
     }
-    // public function index(Request $request)
-    // {
-    //     $success = $request->userInput;
-    //     // DB::table('test_table')->insert(['name'=>$success]);
-    //     //   $success = '{"userId":"1","categoryId":2,"categoryName":"Cleaning Service","workerNumber":1,"workingHour":4,"workingWeek":1,"jobType":1,"price":"100","date":"2/5/2023, 12:20:28 PM","timeZone":"Asia/Dhaka","houseType":1,"mainEntry":1,"houseKeepingList":"[{\"id\":7,\"name\":\"Bedroom\",\"min_val\":0,\"max_val\":10,\"default_val\":0},{\"id\":2,\"name\":\"Entry\",\"min_val\":0,\"max_val\":10,\"default_val\":0},{\"id\":5,\"name\":\"Family Area\",\"min_val\":0,\"max_val\":10,\"default_val\":0},{\"id\":4,\"name\":\"Kitchen\",\"min_val\":0,\"max_val\":10,\"default_val\":0},{\"id\":1,\"name\":\"Living Room\",\"min_val\":0,\"max_val\":10,\"default_val\":0}]","houseKeepingRadioList":[{"id":1,"display_title":"Number of bedroom","label":"3"},{"id":2,"display_title":"Number of bathroom","label":"3"}],"projectsName":"Test 3","skills":"[{\"id\":3,\"name\":\"Bedroom\"}]","locationId":4,"streetAddress":"Fdasfas Df","email":"admin@gmail.com"}';
-    //     //     DB::table('test_table')->insert(['name'=>$success]);
-    //     //   die();
-    //     $data = json_decode($success);
-    //     // echo "<pre>";
-    //     // print_r($data);
-    //     // echo "</pre>";
-    //     // die();
-    //     $job = new Job;
-    //     $job->title = $data->categoryName;
-    //     $job->locations_id = $data->locationId;
-    //     $job->project_name = $data->projectsName;
-    //     $job->address = $data->streetAddress;
-    //     $job->job_type = $data->jobType;
-    //     $job->price = $data->price;
-    //     $job->categories_id = $data->categoryId;
-    //     $job->number_of_worker = $data->workerNumber;
-    //     $job->hours = $data->workingHour;
-    //     $job->week_type = $data->workingWeek;
-    //     $job->dead_line = JobPostingController::timeZoneConverter($data->date, $data->timeZone, $this->settings->time_zone);
-    //     $job->house_keeping_list = $data->houseKeepingList;
-    //     $job->house_keeping_radio_list = json_encode($data->houseKeepingRadioList);
-    //     $job->contact = $data->email;
-    //     $job->poster_id = $data->userId;
-    //     $job->house_type = $data->houseType;
-    //     $job->main_entry = $data->mainEntry;
-    //     $job->skill_list = $data->skills;
-    //     $job->save();
-    //     // return $this->sendResponse($job, 'Job Posted successfully.');
-    // }
 
-    // New Change
     public function index(Request $request)
     {
-        // Get all input as an array
         $data = $request->all();
 
-        // Create a new Job instance and populate fields
         $job = new Job;
         $job->title = $data['categoryName'];
         $job->locations_id = $data['locationId'];
@@ -188,11 +152,11 @@ class JobPostingController extends BaseController // New Change
         $userData = DB::table('users')->select('first_name', 'last_name')->where('id', $data->userId)->first();
 
         $jobData = DB::table('jobs')
-        ->select(
-            'jobs.poster_id',
-            'jobs.title',
-            'users.fcm_token'
-        )
+            ->select(
+                'jobs.poster_id',
+                'jobs.title',
+                'users.fcm_token'
+            )
             ->join('users', 'users.id', '=', 'jobs.poster_id')
             ->where('jobs.id', $data->jobId)->first();
 
@@ -214,8 +178,6 @@ class JobPostingController extends BaseController // New Change
         }
 
         return response()->json($applications);
-
-
     }
 
 
@@ -538,6 +500,7 @@ class JobPostingController extends BaseController // New Change
     {
         $data['userInfo'] = DB::table('users')
             ->select(
+                'users.id',
                 'users.first_name',
                 'users.last_name',
                 'users.skill_list',
@@ -549,7 +512,17 @@ class JobPostingController extends BaseController // New Change
                 'users.created_at',
                 'locations.name as locName',
                 'locations.zip as zip',
-                'users.created_at',
+                'users.is_verified_document',
+                'users.year_of_experience',
+                'users.service_offer',
+                'users.availability',
+                'users.insurance_img',
+                'users.rates',
+                'users.service_areas',
+                'users.facebook_url',
+                'users.twitter_url',
+                'users.instagram_url',
+                'users.linked_in_url',
                 DB::raw("(select sum(jobs.final_hour) from jobs where jobs.awards_id='{$id}' and status=5) as totalHours"),
                 DB::raw("(select sum(jobs.total_amount) from jobs where jobs.awards_id='{$id}' and status=5) as totalAmount"),
                 DB::raw("(select sum(jobs.client_recommended) from jobs where jobs.awards_id='{$id}' and status=5) as totalRecommended"),
@@ -559,6 +532,21 @@ class JobPostingController extends BaseController // New Change
             ->leftJoin('locations', 'locations.id', '=', 'users.client_location')
             ->where('users.id', $id)
             ->first();
+
+        $userDocuments = Document::toBase()->where('user_id', $id)->select('type', 'document_url')->get();
+
+
+        if ($userDocuments->count() > 0) {
+            if ($data['userInfo']->insurance_img) {
+                $userDocuments->push([
+                    'document_url' => $data['userInfo']->insurance_img,
+                    'type' => 'insurance_img'
+                ]);
+            }
+        }
+
+        $data['userInfo']->documents = $userDocuments;
+
         return response()->json($data);
     }
 
@@ -570,6 +558,7 @@ class JobPostingController extends BaseController // New Change
                 'users.last_name',
                 'users.about',
                 'users.created_at',
+                'users.avatar as userImg',
                 'locations.name as locName',
                 'locations.zip as zip',
                 'users.created_at',
