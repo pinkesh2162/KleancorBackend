@@ -66,11 +66,15 @@ class AuthController extends BaseController
                     }
                 }
                 try {
+                    setEmailConfiguration();
                     Mail::send('emails/new-user', ['user' => $user], function ($message) use ($user) {
                         $message->to($user['email'])->subject('Welcome to ' . config('app.name'));
                     });
                     Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
                         $message->to(config('app.admin_email'))->subject('New user register to ' . config('app.name'));
+                    });
+                    Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
+                        $message->to(config('app.admin_email_2'))->subject('New user register to ' . config('app.name'));
                     });
                 } catch (\Throwable $th) {
                     \Log::info($th);
@@ -149,11 +153,15 @@ class AuthController extends BaseController
             }
 
             try {
+                setEmailConfiguration();
                 Mail::send('emails/new-user', ['user' => $user], function ($message) use ($user) {
                     $message->to($user['email'])->subject('Welcome to ' . config('app.name'));
                 });
                 Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
                     $message->to(config('app.admin_email'))->subject('New user register to ' . config('app.name'));
+                });
+                Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
+                    $message->to(config('app.admin_email_2'))->subject('New user register to ' . config('app.name'));
                 });
             } catch (\Throwable $th) {
                 \Log::info($th);

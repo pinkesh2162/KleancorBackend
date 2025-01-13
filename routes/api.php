@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware(['cors'])->group(function () {
-    Route::controller(AuthController::class)->group(function(){
+    Route::controller(AuthController::class)->group(function () {
         Route::post('register', 'register');
         Route::post('login', 'login');
         Route::post('logout', 'logout');
@@ -50,7 +50,6 @@ Route::group([
     Route::get('profile-job-list/{start}/{status}/{userid}/{type}', [JobPostingController::class, 'profile_job_list']);
     Route::get('worker-completed-jobs/{start}/{userid}', [JobPostingController::class, 'worker_completed_jobs']);
     Route::get('settings', [HomeScreenController::class, 'settings']);
-
     Route::get('job-details/{id}/{userId}', [JobPostingController::class, 'job_deatils']);
     Route::post('job-apply', [JobPostingController::class, 'job_apply']);
     Route::get('proposal-list/{id}', [JobPostingController::class, 'proposal_list']);
@@ -62,9 +61,7 @@ Route::group([
     Route::get('recent-search/{id}', [JobPostingController::class, 'recent_search']);
     Route::get('job-search/{keyword}', [JobPostingController::class, 'job_search']);
     Route::get('job-list-search/{keyword}/{start}/{status}', [JobPostingController::class, 'job_list_search']);
-
     Route::get('category-search/{keyword}', [HomeScreenController::class, 'category_search']);
-
     Route::post('accept-offer', [JobPostingController::class, 'accept_offer']);
     Route::post('complete-review', [JobPostingController::class, 'complete_review']);
     Route::get('load-client-profile/{id}', [JobPostingController::class, 'load_client_profile']);
@@ -75,7 +72,7 @@ Route::group([
 });
 
 Route::middleware(['cors'])->group(function () {
-    Route::controller(ProfileController::class)->group(function(){
+    Route::controller(ProfileController::class)->group(function () {
         Route::get('get-profile/{id}', 'getProfile');
         Route::post('profile-update', 'profile_update');
         Route::post('delete-profile/{id}', 'delete_profile');
@@ -96,21 +93,39 @@ Route::middleware(['cors'])->group(function () {
     });
 });
 
+Route::post('/create-payment-user/{id}', [PaymentMethodController::class, 'createPaymentUser']);
+
+//create account 
+Route::post('/create-vendor-stripe-account/{id}', [PaymentMethodController::class, 'createStripeAccount']);
+
+//connect account or link account to stripe
+Route::post('/create-bank-stripe-account/{id}', [PaymentMethodController::class, 'linkBankAccount']);
+
+//create transfer for payroll
+Route::post('/create-transfer/{id}', [PaymentMethodController::class, 'createTransfer']);
+
+//transfer bank account money
+Route::post('/create-transfer-money/{id}', [PaymentMethodController::class, 'transferToBankAccount']);
+
+//delete account 
+Route::delete('/delete-stripe-account/{id}', [PaymentMethodController::class, 'deleteStripeAccount']);
+
 Route::post('messages', [ChatController::class, 'sendMessage']);
 
 
-Route::post('upload-image/{id}', [ImageController::class, 'uploadImage']);
+Route::post('/upload-image/{id}', [ImageController::class, 'uploadImage']);
 Route::post('upload-pdf/{id}', [ImageController::class, 'uploadPdf']);
+
+Route::post('/upload-documents/{id}', [ImageController::class, 'updateDocuments']);
 
 Route::get('get-messages/{channel_name}', [ChatController::class, 'getMessages']);
 Route::get('chat-history/{id}', [ChatController::class, 'chat_history']);
 
 Route::middleware(['cors'])->group(function () {
-    Route::controller(PaymentMethodController::class)->group(function(){
+    Route::controller(PaymentMethodController::class)->group(function () {
         Route::get('payment-info/{id}', 'index');
         Route::post('update-payment-info', 'update');
     });
 });
 
-
-
+// New change

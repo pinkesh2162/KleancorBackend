@@ -1,0 +1,8 @@
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} ^(www.)?kleancor.app
+RewriteCond %{REQUEST_URI} !^kleancor.app/public
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/$1
+RewriteRule ^(/)?$ public/index.php [L]

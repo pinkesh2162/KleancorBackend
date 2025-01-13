@@ -80,6 +80,30 @@
                                             <input class="form-control" type="number" id="commission" name="commission" value="{{old('commission')}}" required="">
                                         </div>
                                     </div>
+                                    <!-- skill list -->
+                                    <div class="form-group row">
+                                        <label class="col-xl-3 col-md-4"><span>*</span>Skills</label>
+                                        <div class="col-md-7">
+                                            <div class="row">
+                                                @foreach($skills as $skill)
+                                                <div class="col-md-4">
+                                                    <div class="d-flex align-items-start skill-item">
+                                                        <input class="checkbox_animated check-it" type="checkbox" name="skills[]" value="{{ $skill->id }}" id="skill{{ $skill->id }}">
+                                                        <label class="form-check-label ms-2" for="skill{{ $skill->id }}">
+                                                            {{ $skill->name }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                            @if ($errors->has('skills'))
+                                            <div class="invalid-feedback d-block">
+                                                {{ $errors->first('skills') }}
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <!-- end skill list -->
                                     <div class="form-group row">
                                         <label class="col-xl-3 col-md-4"><span>*</span>Status</label>
                                         <div class="col-md-7">

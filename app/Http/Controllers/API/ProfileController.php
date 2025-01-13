@@ -8,21 +8,34 @@ use App\Models\User;
 use App\Models\Notifications;
 use Illuminate\Support\Facades\DB;
 use Mail;
+use App\Models\Document;
 
 class ProfileController extends BaseController
 {
     public function getProfile(request $request)
     {
         $data['userData'] = DB::table("users")
-            ->select('id', 'first_name', 'last_name', 'email', 'address', 'about', 'price', 'expertise_label', 'contact', 'avatar', 'insurance_img', 'users.location_list as lid', 'users.skill_list as sid', 'users.client_location as Clid', 'users.category_list as cateid')
+            ->select('id', 'first_name', 'last_name', 'insurance_img', 'email', 'address', 'about', 'price', 'expertise_label', 'contact', 'avatar', 'insurance_img', 'users.location_list as lid', 'users.skill_list as sid', 'users.client_location as Clid', 'users.category_list as cateid', 'is_verified_document', 'year_of_experience', 'service_offer', 'availability', 'rates', 'service_areas', 'facebook_url', 'twitter_url', 'instagram_url', 'linked_in_url')
             ->where('id', $request->id)
             ->first();
-
 
         $locations = $data['userData']->Clid;
         $locations_id = explode(',', $locations);
         $data['locationData'] = DB::table('locations')->select('name', 'zip')->whereIn('id', $locations_id)
             ->get();
+
+        $userDocuments = Document::toBase()->where('user_id', $request->id)->select('type', 'document_url')->get();
+
+        if ($userDocuments->count() > 0) {
+            if ($data['userData']->insurance_img) {
+                $userDocuments->push([
+                    'document_url' => $data['userData']->insurance_img,
+                    'type' => 'insurance_img'
+                ]);
+            }
+        }
+
+        $data['userData']->documents = $userDocuments;
 
         return response()->json($data);
     }
@@ -38,7 +51,7 @@ class ProfileController extends BaseController
     public function locations(request $request)
     {
         $data = DB::table("locations")
-        ->select('id', 'name', 'zip', 'status')
+            ->select('id', 'name', 'zip', 'status')
             ->get();
         return response()->json($data);
     }
@@ -46,14 +59,6 @@ class ProfileController extends BaseController
 
     public function profile_update(request $request)
     {
-        // $success = $request->userInput;
-        // $success = '{"first_name":"sahed","last_name":"ahmed","address":"satkhira","about":"dfgdfghdfhdfhfhhfhhdfhdf","price":"1","expertise_label":"gewrtt","contact":"5325235","locations_id":"[{\"id\":5,\"name\":\"Missouri\",\"zip\":\"63001\"},{\"id\":7,\"name\":\"Nevada\",\"zip\":\"88901\"},{\"id\":2,\"name\":\"Pittsburgh\",\"zip\":\"15210\"}]","skills_id":"[{\"id\":4,\"name\":\"Painting\",\"status\":1},{\"id\":6,\"name\":\"Assembling\",\"status\":1}]"}';
-        // $data = json_decode($success);
-
-        // echo "<pre>";
-        // print_r($data);
-        // die();
-
         $user = User::where('id', $request->id)
             ->update([
                 'first_name' => $request->first_name,
@@ -65,7 +70,15 @@ class ProfileController extends BaseController
                 'contact' => $request->contact,
                 'location_list' => $request->locations_id,
                 'skill_list' => $request->skills_id,
-                'category_list' => $request->categories_id
+                'category_list' => $request->categories_id,
+                'year_of_experience' => $request->year_of_experience,
+                'service_offer'      => $request->service_offer,
+                'availability'       => $request->availability,
+                'service_areas'      => $request->service_areas,
+                'facebook_url'       => $request->facebook_url,
+                'twitter_url'        => $request->twitter_url,
+                'instagram_url'      => $request->instagram_url,
+                'linked_in_url'      => $request->linked_in_url,
             ]);
 
         if ($user) {
@@ -111,7 +124,7 @@ class ProfileController extends BaseController
     public function categories(request $request)
     {
         $data = DB::table("categories")
-        ->select('id', 'name', 'status')
+            ->select('id', 'name', 'spanish_name', 'status')
             ->get();
         return response()->json($data);
     }
@@ -209,8 +222,8 @@ class ProfileController extends BaseController
     public function getNotifications(Request $request)
     {
         $data = DB::table("notifications")
-        ->select('id', 'users_id', 'title', 'message', 'status')
-        ->where('users_id', $request->id)
+            ->select('id', 'users_id', 'title', 'message', 'status')
+            ->where('users_id', $request->id)
             ->orderBy('id', 'desc')
             ->get();
 
@@ -219,8 +232,8 @@ class ProfileController extends BaseController
     public function updateNotifications(Request $request)
     {
         $data = DB::table("notifications")
-        ->where('status', 0)
-        ->where('users_id', $request->id)
+            ->where('status', 0)
+            ->where('users_id', $request->id)
             ->update([
                 'status' => 1
             ]);
@@ -233,7 +246,7 @@ class ProfileController extends BaseController
     public function getLatestNotifyRows(Request $request)
     {
         $data = DB::table("notifications")
-        ->where('users_id', $request->id)
+            ->where('users_id', $request->id)
             ->where('status', 0)
             ->count();
 
@@ -245,8 +258,8 @@ class ProfileController extends BaseController
     public function getFcm(Request $request)
     {
         $data = DB::table("users")
-        ->select('id', 'fcm_token')
-        ->where('id', $request->id)
+            ->select('id', 'fcm_token')
+            ->where('id', $request->id)
             ->get();
 
         return response()->json($data);
@@ -276,8 +289,8 @@ class ProfileController extends BaseController
     {
 
         $data = DB::table("sent_refer_codes")
-        ->select('number')
-        ->where('user_id', $request->id)
+            ->select('number')
+            ->where('user_id', $request->id)
             ->get();
 
         return response()->json($data);
@@ -287,17 +300,17 @@ class ProfileController extends BaseController
     {
 
         $cdata = DB::table("referrals")
-        ->where('referrer_id', $request->id)
+            ->where('referrer_id', $request->id)
             ->get();
 
         $pdata = DB::table("sent_refer_codes")
-        ->where('user_id', $request->id)
+            ->where('user_id', $request->id)
             ->get();
 
         $rdatas = DB::table("referrals")
-        ->select('first_name', 'last_name')
-        ->join('users', 'users.id', '=', 'referrals.refer_id')
-        ->where('referrals.referrer_id', $request->id)
+            ->select('first_name', 'last_name')
+            ->join('users', 'users.id', '=', 'referrals.refer_id')
+            ->where('referrals.referrer_id', $request->id)
             ->orderBy('referrals.id', 'desc')
             ->limit(5)
             ->get();

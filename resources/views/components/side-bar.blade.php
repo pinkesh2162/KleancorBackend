@@ -81,7 +81,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="{{ Active::checkRoute(['locations.index', 'locations.create']) }}">
+            <!-- <li class="{{ Active::checkRoute(['locations.index', 'locations.create']) }}">
                 <a class="sidebar-header" href="javascript:void(0)">
                     <i class="fas fa-location-arrow"></i>
                     <span>Manage Location</span>
@@ -103,8 +103,8 @@
                         </a>
                     </li>
                 </ul>
-            </li>
-            <li class="{{ Active::checkRoute(['skills.index', 'skills.create']) }}">
+            </li> -->
+            <!-- <li class="{{ Active::checkRoute(['skills.index', 'skills.create']) }}">
                 <a class="sidebar-header" href="javascript:void(0)">
                     <i class="fas fa-stamp"></i>
                     <span>Manage Skill</span>
@@ -126,7 +126,7 @@
                         </a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
 
             <li class="{{ Active::checkRoute(['housekeepingradios.index', 'housekeepingradios.create']) }}">
                 <a class="sidebar-header" href="javascript:void(0)">

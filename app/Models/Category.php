@@ -13,8 +13,13 @@ class Category extends Model
         'id',
         'name',
         'spanish_name',
-        'picture', 
-        'commission', 
+        'picture',
+        'commission',
         'status'
     ];
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'category_skills');
+    }
 }

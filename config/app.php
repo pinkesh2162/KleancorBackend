@@ -28,7 +28,8 @@ return [
     |
     */
 
-    'admin_email' => env('ADMIN_EMAIL', 'support_infos@kleancor.app'),
+    'admin_email' => env('ADMIN_EMAIL', 'soporte@kleancor.com'),
+    'admin_email_2' => env('ADMIN_EMAIL_2', 'kleancor.com@gmail.com'),
 
 
     /*
@@ -82,8 +83,8 @@ return [
     | ahead and set this to a sensible default for you out of the box.
     |
     */
-    
-    'timezone' => env('APP_TIMEZONE','UTC'),
+
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -228,5 +229,6 @@ return [
         'Active' => Pyaesone17\ActiveState\ActiveFacade::class,
     ])->toArray(),
     'Image' => Intervention\Image\Facades\Image::class,
-
+    'stripe_secret' => env('STRIPE_SECRET'),
+    'stripe_public' => env('STRIPE_PUBLIC'),
 ];

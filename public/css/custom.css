@@ -1,0 +1,16 @@
+.skill-item {
+    display: flex; /* Use flexbox for layout */
+    align-items: start; /* Maintain top alignment for consistency */
+    gap: 8px; /* Space between checkbox and label */
+}
+
+.skill-item input[type="checkbox"] {
+    margin: 0; /* Remove default margin */
+    margin-top: 3px; /* Slight adjustment to center checkbox vertically relative to the text */
+}
+
+.skill-item label {
+    word-break: break-word; /* Ensure long text breaks at word boundaries */
+    white-space: normal; /* Allow wrapping of text */
+    margin: 0; /* Remove extra margin */
+}

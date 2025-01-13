@@ -27,6 +27,10 @@ class User extends Authenticatable
         'auth_id',
         'status',
         'refer_code',
+        'official_id',
+        'dob',
+        'gender',
+        'social_media_links',
         'skill_list',
         'address',
         'location_list',
@@ -38,7 +42,19 @@ class User extends Authenticatable
         'insurance_img',
         'avatar',
         'client_location',
-        'fcm_token'
+        'fcm_token',
+        'is_verified_document',
+        'year_of_experience',
+        'service_offer',
+        'availability',
+        'rates',
+        'service_areas',
+        'facebook_url',
+        'twitter_url',
+        'instagram_url',
+        'linked_in_url',
+        'payment_customer_id',
+        'stripe_bank_id',
     ];
 
     /**
