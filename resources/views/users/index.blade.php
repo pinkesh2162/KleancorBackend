@@ -61,6 +61,7 @@
                                 <th>Email</th>
                                 <th>Type</th>
                                 <th>Status</th>
+                                <th>Verification Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -89,6 +90,16 @@
                                             <span class="badge badge-primary">Deactive</span>
                                         </td>
                                     @endif
+                                    <td>
+                                        <div>
+                                            <a href="{{route('users.show',['user' => $user->id])}}">
+                                            <span class="badge 
+{{$user->is_verified_document ? 'badge-success' : 'badge-primary'}}">
+                                                {{$user->is_verified_document ? 'Verified' : 'Verify'}}
+                                            </span>
+                                            </a>
+                                        </div>
+                                    </td>
                                     <td>
                                         <div>
                                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">

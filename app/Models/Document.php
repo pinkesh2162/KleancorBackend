@@ -16,4 +16,12 @@ class Document extends Model
         'document_url',
         'type',
     ];
+    
+//    type
+    const OFFICIAL_ID = 'official_id';
+    const CERTIFICATE = 'certificate';
+    const RESUME = 'resume';
+    
+//    image type check
+    const IMAGE = 'image';
 }
