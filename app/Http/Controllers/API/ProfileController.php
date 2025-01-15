@@ -15,7 +15,7 @@ class ProfileController extends BaseController
     public function getProfile(request $request)
     {
         $data['userData'] = DB::table("users")
-            ->select('id', 'first_name', 'last_name', 'insurance_img', 'email', 'address', 'about', 'price', 'expertise_label', 'contact', 'avatar', 'insurance_img', 'users.location_list as lid', 'users.skill_list as sid', 'users.client_location as Clid', 'users.category_list as cateid', 'is_verified_document', 'year_of_experience', 'service_offer', 'availability', 'rates', 'service_areas', 'facebook_url', 'twitter_url', 'instagram_url', 'linked_in_url')
+            ->select('id', 'first_name', 'last_name', 'insurance_img', 'email', 'address', 'about', 'price', 'expertise_label', 'contact', 'avatar', 'insurance_img', 'users.location_list as lid', 'users.skill_list as sid', 'users.client_location as Clid', 'users.category_list as cateid', 'is_verified_document', 'year_of_experience', 'service_offer', 'availability', 'rates', 'service_areas', 'facebook_url', 'twitter_url', 'instagram_url', 'linked_in_url', 'users.gender')
             ->where('id', $request->id)
             ->first();
 
@@ -107,6 +107,7 @@ class ProfileController extends BaseController
                 'contact' => $request->contact,
                 'client_location' => $request->location_id,
                 'address' => $request->address,
+                'gender' => $request->gender,
             ]);
 
         if ($user) {

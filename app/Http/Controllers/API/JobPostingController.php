@@ -121,6 +121,7 @@ class JobPostingController extends BaseController // New Change
                 'users.id as cId',
                 'users.last_name as cLname',
                 'users.avatar as userImg',
+                'users.gender',
                 'locations.name as locName',
                 'locations.zip',
                 'categories.picture as cpic',
@@ -203,7 +204,8 @@ class JobPostingController extends BaseController // New Change
                 'categories.name as catName',
                 'jobs.categories_id',
                 'users.avatar', // New Change
-                DB::raw('(select count(j.id) from jobs as j where j.poster_id=jobs.poster_id and j.status<5) as totalJobs')
+                DB::raw('(select count(j.id) from jobs as j where j.poster_id=jobs.poster_id and j.status<5) as totalJobs'),
+                DB::raw("IFNULL(ROUND((jobs.client_rating1 + jobs.client_rating2 + jobs.client_rating3) / 3, 2), 0) as totalStar")
             )
             ->join('locations', 'locations.id', '=', 'jobs.locations_id')
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
@@ -281,6 +283,7 @@ class JobPostingController extends BaseController // New Change
                 'users.first_name',
                 'users.last_name',
                 'users.about',
+                'users.gender',
                 'users.avatar as rImg'
             )
             ->join('applications', 'applications.users_id', '=', 'users.id')
@@ -375,10 +378,12 @@ class JobPostingController extends BaseController // New Change
                 'categories.picture',
                 'categories.name as catName',
                 'jobs.categories_id',
+                'users.avatar', //new
                 DB::raw('(select count(j.id) from jobs as j where j.poster_id=jobs.poster_id and j.status<5) as totalJobs')
             )
             ->join('locations', 'locations.id', '=', 'jobs.locations_id')
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
+            ->join('users', 'users.id', '=', 'jobs.poster_id') // New Change
             ->where('jobs.status', $status)
             ->where(function ($query) use ($keyword) {
                 return $query->where('locations.name', 'like', "%{$keyword}%")->orWhere('locations.zip', 'like', "%{$keyword}%")->orWhere('jobs.title', 'like', "%{$keyword}%");
@@ -398,10 +403,12 @@ class JobPostingController extends BaseController // New Change
                 'categories.picture',
                 'categories.name as catName',
                 'jobs.categories_id',
+                'users.avatar', //new
                 DB::raw('(select count(j.id) from jobs as j where j.poster_id=jobs.poster_id and j.status<5) as totalJobs')
             )
             ->join('locations', 'locations.id', '=', 'jobs.locations_id')
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
+            ->join('users', 'users.id', '=', 'jobs.poster_id') // New Change
             ->where('jobs.status', $status)
             ->where(function ($query) use ($keyword) {
                 return $query->where('locations.name', 'like', "%{$keyword}%")->orWhere('locations.zip', 'like', "%{$keyword}%")->orWhere('jobs.title', 'like', "%{$keyword}%");
@@ -507,6 +514,7 @@ class JobPostingController extends BaseController // New Change
                 'users.location_list',
                 'users.about',
                 'users.email',
+                'users.gender',
                 'users.address',
                 'users.avatar as userImg',
                 'users.created_at',
@@ -557,6 +565,7 @@ class JobPostingController extends BaseController // New Change
                 'users.first_name',
                 'users.last_name',
                 'users.about',
+                'users.gender',
                 'users.created_at',
                 'users.avatar as userImg',
                 'locations.name as locName',
@@ -689,6 +698,7 @@ class JobPostingController extends BaseController // New Change
                 'users.first_name',
                 'users.last_name',
                 'users.about',
+                'users.gender',
                 'jobs.project_name',
                 'users.avatar as rImg',
                 'jobs.status',
