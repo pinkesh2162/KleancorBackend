@@ -3,14 +3,17 @@
     <div class="main-header-right row">
         <div class="main-header-left d-lg-none w-auto">
             <div class="logo-wrapper">
-                <a href="index.html">
-                    <img class="blur-up lazyloaded d-block d-lg-none" src="{{ asset('assets/images/dashboard/multikart-logo-black.png') }}" alt="">
+                <a href="{{route('home')}}">
+                    <img class="blur-up lazyloaded d-block d-lg-none"
+                         style="height: 35px"
+                         src="{{ asset('assets/images/dashboard/kleancor_logo.png') }}" alt="">
+{{--                    assets/images/dashboard/multikart-logo-black.png--}}
                 </a>
             </div>
         </div>
         <div class="mobile-sidebar w-auto">
             <div class="media-body text-end switch-sm">
-                <label class="switch">
+                <label class="switch mt-0">
                     <a href="javascript:void(0)">
                         <i id="sidebar-toggle" data-feather="align-left"></i>
                     </a>

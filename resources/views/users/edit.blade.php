@@ -79,6 +79,44 @@
                                             </div>
                                         </div>
                                         <div class="form-group row">
+                                            <label for="gender" class="col-xl-3 col-md-4"><span>*</span>
+                                                Gender</label>
+                                            <div class="col-md-7">
+                                                <div class="form-group m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                                <label class="d-block" for="male">
+                                                    <input class="radio_animated" id="male" type="radio"
+                                                           name="gender"
+                                                           {{$user->gender === 'male' ? 'checked' : ''}}
+                                                           value="male">
+                                                    Male
+                                                </label>
+                                                <label class="d-block" for="female">
+                                                    <input class="radio_animated" id="female" type="radio"
+                                                           name="gender"
+                                                           {{$user->gender === 'female' ? 'checked' : ''}}
+                                                           value="female">
+                                                    Female
+                                                </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="mobile" class="col-xl-3 col-md-4"><span>*</span>
+                                                Mobile</label>
+                                            <div class="col-md-7">
+                                                <input class="form-control" id="mobile" name="contact"
+                                                       value="{{ $user->contact }}" type="number" required="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="address" class="col-xl-3 col-md-4"><span>*</span>
+                                                Address</label>
+                                            <div class="col-md-7">
+                                                <input class="form-control" id="address" name="address"
+                                                       value="{{ $user->address }}" type="text" required="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
                                             <label class="col-xl-3 col-md-4"><span>*</span>Admin Roll</label>
                                             <div class="col-md-7">
                                                 <div

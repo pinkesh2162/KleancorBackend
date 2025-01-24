@@ -328,20 +328,18 @@ class ProfileController extends BaseController
 
     public function delete_profile(Request $request)
     {
-
-
-        $deletedUser = User::where('id', $request->id)
-            ->update([
-
-                'first_name' => 'KleanCor',
-                'last_name' => 'User',
-                'email' => 'deleteduser' . rand(0, 9999) . '@email.com',
-                'refer_code' => '000',
-                'address' => null,
-                'about' => null,
-                'contact' => '0000000',
-                'avatar' => null,
-            ]);
+        $deletedUser = User::findOrFail($request->id)->delete();
+//            ->update([
+//
+//                'first_name' => 'KleanCor',
+//                'last_name' => 'User',
+//                'email' => 'deleteduser' . rand(0, 9999) . '@email.com',
+//                'refer_code' => '000',
+//                'address' => null,
+//                'about' => null,
+//                'contact' => '0000000',
+//                'avatar' => null,
+//            ]);
 
         if ($deletedUser) {
             return response([

@@ -23,8 +23,8 @@ class AuthController extends BaseController
     {
         $auth_type = $request->auth_type;
         if ($auth_type == 1) {
-            if (User::where('email', '=', $request->email)->first()) {
-                $user = User::where('email', '=', $request->email)->first();
+            if (User::where('email', '=', $request->email)->whereNull('deleted_at')->exists()) {
+                $user = User::where('email', '=', $request->email)->whereNull('deleted_at')->first();
                 $user['token'] =  $user->createToken('MyApp')->plainTextToken;
                 return $this->sendResponse($user, 'You already have an existing account.');
             } else {
@@ -94,7 +94,7 @@ class AuthController extends BaseController
                 'email' => [
                     'nullable',
                     "required_if:auth_type, ==, 0",
-                    Rule::unique('users')->ignore($auth_type)
+                    Rule::unique('users')->ignore($auth_type)->whereNull('deleted_at'),
                 ],
                 'auth_type' => 'required|integer',
                 'auth_id' =>  [
@@ -183,8 +183,8 @@ class AuthController extends BaseController
         $auth_type = $request->auth_type;
 
         if ($auth_type == 1) {
-            if (User::where('email', '=', $request->email)->first()) {
-                $user = User::where('email', '=', $request->email)->first();
+            if (User::where('email', '=', $request->email)->whereNull('deleted_at')->first()) {
+                $user = User::where('email', '=', $request->email)->whereNull('deleted_at')->first();
                 $user['token'] =  $user->createToken('MyApp')->plainTextToken;
                 return $this->sendResponse($user, 'User already registered.');
             } else {

@@ -101,7 +101,10 @@ class UserController extends Controller
         $request->validate([
             'first_name' => 'required|min:3|max:30',
             'last_name' => 'required|min:3|max:30',
+            'address' => 'required|min:3|max:50',
+            'contact' => 'required|numeric',
             'email' => 'required|min:3|max:150',
+            'gender' => 'required|string|min:4|max:6',
             'is_admin' => 'required',
             'status' => 'required'
         ]);
