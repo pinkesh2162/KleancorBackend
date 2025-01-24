@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -57,6 +59,9 @@ class User extends Authenticatable
         'stripe_bank_id',
     ];
 
+    const ACTIVE = 1;
+    const DE_ACTIVE = 0;
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -85,8 +90,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class);
     }
-    
-    public function documents(){
-        return $this->hasMany(Document::class,'user_id');
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'user_id');
     }
 }

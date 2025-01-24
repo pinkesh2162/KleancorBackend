@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderBy('id', 'desc')->get(); 
+        $users = User::when(@$request->status == '0' || @$request->status == '1', function ($query) use ($request) {
+            return $query->where('status', $request->status == '1');
+        })
+            ->orderBy('id', 'desc')->get();
         return view('users.index', compact('users'));
     }
 
@@ -22,8 +25,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'first_name' => 'required|min:3|max:30',      
-            'last_name' => 'required|min:3|max:30',    
+            'first_name' => 'required|min:3|max:30',
+            'last_name' => 'required|min:3|max:30',
             'email' => 'required|min:3|max:30',
             'is_admin' => 'required',
             'status' => 'required'
@@ -44,7 +47,8 @@ class UserController extends Controller
         return view('users.show', ['user' => $user]);
     }
 
-    protected function getDocumentType($url){
+    protected function getDocumentType($url)
+    {
         $docType = null;
 
         $extension = pathinfo($url, PATHINFO_EXTENSION);
@@ -63,7 +67,7 @@ class UserController extends Controller
                 break;
             }
         }
-        
+
         return $docType;
     }
 
@@ -95,20 +99,38 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'first_name' => 'required|min:3|max:30',      
-            'last_name' => 'required|min:3|max:30',    
+            'first_name' => 'required|min:3|max:30',
+            'last_name' => 'required|min:3|max:30',
             'email' => 'required|min:3|max:150',
             'is_admin' => 'required',
             'status' => 'required'
         ]);
-  
+
         $user->update($request->all());
         return redirect()->route('users.index')->with('message', 'User Updated Successfully!!');
+    }
+
+    public function changeStatus(Request $request, User $user)
+    {
+        $user->update(['status' => $user->status = !$user->status]);
+
+        return redirect()->route('users.index')->with('message', 'Status Updated Successfully!!');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
+        return redirect()->route('users.index')->with('error', 'User Delete Successfully!!');
+    }
+
+    public function deleteAllUsers(Request $request)
+    {
+        if (empty($request->usersId)) {
+            return redirect()->back()->withErrors('users not found.');
+        }
+
+        User::whereIn('id', explode(',', $request->usersId))->delete();
+
         return redirect()->route('users.index')->with('error', 'User Delete Successfully!!');
     }
 }

@@ -9,7 +9,7 @@ use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\ChatController;
 use App\Http\Controllers\API\ImageController;
 use App\Http\Controllers\API\PaymentMethodController;
-
+use App\Mail\WelcomeMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,5 +127,11 @@ Route::middleware(['cors'])->group(function () {
         Route::post('update-payment-info', 'update');
     });
 });
+
+// Route::get('send/mail', function () {
+//     setEmailConfiguration();
+//     \Mail::to('chandanpradhan.in@gmail.com')->send(new WelcomeMail('test from'));
+//     dd('send success');
+// });
 
 // New change

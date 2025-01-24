@@ -9,8 +9,10 @@ class Job extends Model
 {
     use HasFactory;
 
+    protected $table = 'jobs';
+
     protected $fillable = [
-        'id', 
+        'id',
         'title',
         'project_name',
         'short_description',
@@ -21,7 +23,7 @@ class Job extends Model
         'price',
         'final_price',
         'total_amount',
-        'categories_id',        
+        'categories_id',
         'number_of_worker',
         'hours',
         'final_hour',
@@ -45,5 +47,18 @@ class Job extends Model
         'worker_rating2',
         'worker_rating3',
         'worker_comment',
+        'exclude_users'
     ];
+
+    protected $casts = [
+        'exclude_users' => 'json'
+    ];
+
+    // status of job
+    const NEW = 1;
+    const HIRED = 2;
+    const ACCEPT = 3;
+    // const CLIENT_DECLINE = 4;
+    const COMPLETE = 5;
+    const DECLINE = 6;
 }

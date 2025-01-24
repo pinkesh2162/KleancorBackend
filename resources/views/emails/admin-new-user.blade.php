@@ -1,43 +1,124 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Welcome to Kleancor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kleancor Email Template</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
+            background-color: #f8f8f8;
         }
 
-        .email-container {
+        .container {
             max-width: 600px;
-            margin: 30px auto;
-            background: #ffffff;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
         .header {
+            color: #ffffff;
             text-align: center;
-            padding: 10px 0;
-            background-color: #4CAF50;
-            color: #fff;
-            border-radius: 5px 5px 0 0;
+            position: relative;
+        }
+
+        .header img {
+            width: 100%;
+        }
+
+        .header .btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background-color: #ffffff;
+            color: #000;
+            padding: 10px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: #f0f0f0;
         }
 
         .content {
             padding: 20px;
-            text-align: left;
+            color: #333333;
+        }
+
+        .content .head {
+            font-size: 26px;
+            color: #333333;
+        }
+
+        .content p {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        .content strong {
+            font-weight: bold;
+        }
+
+        .contact {
+            margin-top: 20px;
+            color: #333333;
+        }
+
+        .contact p {
+            margin: 5px 0;
+        }
+
+        .contact a {
+            color: #004aab;
+            text-decoration: none;
+        }
+
+        .help-section {
+            margin-top: 20px;
+            color: #333333;
+            text-align: center;
+        }
+
+        .help-section a {
+            color: #004aab;
+            text-decoration: none;
+        }
+
+        .help-section p {
+            margin: 0;
         }
 
         .footer {
-            text-align: center;
+            background-color: #333dd0;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        .brand-section {
+            border-bottom: 1px solid #ddd;
             padding: 10px 0;
-            font-size: 12px;
-            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .brand-logo {
+            padding: 5px 20px;
+            font-size: 20px;
         }
     </style>
 </head>

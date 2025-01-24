@@ -14,7 +14,9 @@ use DateTimeZone;
 use App\Models\Notifications;
 use App\Services\FirebaseService;
 use App\Constants\NotificationTypes;
+use App\Models\Application;
 use App\Models\Document;
+use Carbon\Carbon;
 
 class JobPostingController extends BaseController // New Change
 {
@@ -145,7 +147,9 @@ class JobPostingController extends BaseController // New Change
         $data = json_decode($success);
         $arr = [
             'jobs_id' => $data->jobId,
-            'users_id' => $data->userId
+            'users_id' => $data->userId,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
         ];
 
         $applications = DB::table('applications')->insert($arr);
@@ -190,7 +194,7 @@ class JobPostingController extends BaseController // New Change
         $data->dead_line = JobPostingController::timeZoneConverter(str_replace(' ', ',', $data->dead_line), $this->settings->time_zone, 'Asia/Dhaka');
         return response()->json($data);
     }
-    public function job_list($start, $status)
+    public function job_list(Request $request, $start, $status)
     {
         $data['jobList'] = DB::table("jobs")
             ->select(
@@ -211,6 +215,9 @@ class JobPostingController extends BaseController // New Change
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
             ->join('users', 'users.id', '=', 'jobs.poster_id') // New Change
             ->where('jobs.status', $status)
+            ->when(!empty($request->userId), function ($query) use ($request) {
+                $query->whereJsonDoesntContain('jobs.exclude_users', (int)$request->userId)->orWhereNull('jobs.exclude_users');
+            })
             ->skip($start)->take($this->settings->job_limit)
             ->orderBy("id", "desc")
             ->get();
@@ -220,6 +227,7 @@ class JobPostingController extends BaseController // New Change
         return response()->json($data);
     }
 
+    //calling if worker hired status = 2
     public function profile_job_list($start, $status, $userId, $type)
     {
         $sql = DB::table("jobs")
@@ -465,7 +473,28 @@ class JobPostingController extends BaseController // New Change
     {
         $success = $request->userInput;
         $data = json_decode($success);
-        DB::table('jobs')->where('id', $data->jobId)->update(['status' => $data->status]);
+        if ($data->status == Job::DECLINE) {
+            $jobData =
+                DB::table('jobs')->where('id', $data->jobId)->first();
+
+            $excludeUsers = $jobData->exclude_users;
+            if (empty($excludeUsers)) {
+                $excludeUsers = [$jobData->awards_id];
+            } else {
+                array_push($excludeUsers, $jobData->awards_id);
+            }
+
+            Application::where('jobs_id', $data->jobId)->where('users_id', $jobData->awards_id)->delete();
+
+            DB::table('jobs')->where('id', $data->jobId)->update([
+                'awards_id' => null,
+                'final_price' => null,
+                'status' => Job::NEW,
+                'exclude_users' => $excludeUsers
+            ]);
+        } else {
+            DB::table('jobs')->where('id', $data->jobId)->update(['status' => $data->status]);
+        }
     }
 
     public function complete_review(Request $request)

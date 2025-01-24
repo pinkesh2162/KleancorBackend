@@ -190,6 +190,7 @@ class ProfileController extends BaseController
             'message' => $request->message,
         );
 
+        setEmailConfiguration();
         if ($request->title == 'Apply Notification') {
             Mail::send('apply', ['applyNotification' => $applyNotification], function ($applyMessage) use ($applyNotification) {
                 $applyMessage->to($applyNotification['email'])->subject($applyNotification['title']);

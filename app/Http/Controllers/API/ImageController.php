@@ -110,7 +110,6 @@ class ImageController extends Controller
     // New change
     public function updateDocuments(Request $request, $id)
     {
-        // dd($request->all());
         $user = User::where('id', $id)->first();
         if (empty($user)) {
             return response()->json(['error' => 'User not found'], 422);
@@ -122,44 +121,44 @@ class ImageController extends Controller
 
         //for official id image
         if ($request->file('official_id')) {
-            $imageName = time() . '-' . $request->official_id->getClientOriginalName();
-            $request->official_id->storeAs('public/images/documents', $imageName);
-            $url = URL::to('/') . '/storage/images/documents/' . $imageName;
+            $officialImageName = time() . '-' . $request->official_id->getClientOriginalName();
+            $request->official_id->storeAs('public/images/documents', $officialImageName);
+            $url = URL::to('/') . '/storage/images/documents/' . $officialImageName;
 
-            $documentInput = [
+            $documentOfficialInput = [
                 'type' => 'official_id',
                 'user_id'      => $user->id,
                 'document_url' => $url,
             ];
-            Document::updateOrCreate(['user_id' => $user->id, 'type' => 'official_id'], $documentInput);
+            Document::updateOrCreate(['user_id' => $user->id, 'type' => 'official_id'], $documentOfficialInput);
         }
 
         //for certificate pdf
         if ($request->file('certificate')) {
-            $imageName = time() . '-' . $request->certificate->getClientOriginalName();
-            $request->certificate->storeAs('public/images/documents', $imageName);
-            $url = URL::to('/') . '/storage/images/documents/' . $imageName;
+            $certificateFileName = time() . '-' . $request->certificate->getClientOriginalName();
+            $request->certificate->storeAs('public/images/documents', $certificateFileName);
+            $url = URL::to('/') . '/storage/images/documents/' . $certificateFileName;
 
-            $documentInput = [
+            $documentCertificateInput = [
                 'type' => 'certificate',
                 'user_id'      => $user->id,
                 'document_url' => $url,
             ];
-            Document::updateOrCreate(['user_id' => $user->id, 'type' => 'certificate'], $documentInput);
+            Document::updateOrCreate(['user_id' => $user->id, 'type' => 'certificate'], $documentCertificateInput);
         }
 
         //for resume pdf
         if ($request->file('resume')) {
-            $imageName = time() . '-' . $request->resume->getClientOriginalName();
-            $request->resume->storeAs('public/images/documents', $imageName);
-            $url = URL::to('/') . '/storage/images/documents/' . $imageName;
+            $resumeFileName = time() . '-' . $request->resume->getClientOriginalName();
+            $request->resume->storeAs('public/images/documents', $resumeFileName);
+            $url = URL::to('/') . '/storage/images/documents/' . $resumeFileName;
 
-            $documentInput = [
+            $documentResumeInput = [
                 'type' => 'resume',
                 'user_id'      => $user->id,
                 'document_url' => $url,
             ];
-            Document::updateOrCreate(['user_id' => $user->id, 'type' => 'resume'], $documentInput);
+            Document::updateOrCreate(['user_id' => $user->id, 'type' => 'resume'], $documentResumeInput);
         }
 
         $user->update(['is_verified_document' => false]);

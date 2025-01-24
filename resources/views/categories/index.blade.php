@@ -131,9 +131,11 @@
 </div>
 <script>
     function confirmDelete(categoryId) {
-        const deleteForm = document.getElementById('deleteForm');
+        const deleteForm = document.getElementById("deleteForm");
         deleteForm.action = `/categories/${categoryId}`;
-        const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        const deleteModal = new bootstrap.Modal(
+            document.getElementById("deleteConfirmationModal")
+        );
         deleteModal.show();
     }
 </script>
