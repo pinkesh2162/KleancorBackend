@@ -29,7 +29,10 @@ class UserController extends Controller
             'last_name' => 'required|min:3|max:30',
             'email' => 'required|min:3|max:30',
             'is_admin' => 'required',
-            'status' => 'required'
+            'status' => 'required',
+            'address' => 'required|min:3|max:50',
+            'contact' => 'required|numeric',
+            'gender' => 'required|string|min:4|max:6',
         ]);
         User::create($request->all());
         return redirect()->route('users.index')->with('message', 'User Added Successfully!!');
