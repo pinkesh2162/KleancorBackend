@@ -48,7 +48,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::resource('users', UserController::class);
     Route::post('users/{user}/change-status', [UserController::class, 'changeStatus']);
     Route::post('users/delete-all', [UserController::class, 'deleteAllUsers']);
-    Route::post('users/verifying/{id}', [UserController::class, 'verifying'])->name('users.verifying');
+    Route::post('users/{id}/verifying', [UserController::class, 'verifying'])->name('users.verifying');
 });
 
 Route::get('send-mail', function () {

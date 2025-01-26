@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -41,7 +42,7 @@ class UserController extends Controller
     public function show(Request $request, $id)
     {
         $user = User::with('documents')->findOrFail($id);
-        $user->insurance_img_type = $this->getDocumentType($user->insurance_img);
+//        $user->insurance_img_type = $this->getDocumentType($user->insurance_img);
 
         foreach ($user->documents as $document) {
             $document->doc_type = $this->getDocumentType($document->document_url);
@@ -57,7 +58,7 @@ class UserController extends Controller
         $extension = pathinfo($url, PATHINFO_EXTENSION);
 
         $types = [
-            'image' => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'],
+            'image' => ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg','avif'],
             'document' => ['doc', 'docx', 'pdf', 'txt', 'odt'],
             'spreadsheet' => ['xls', 'xlsx', 'csv'],
             'presentation' => ['ppt', 'pptx'],
@@ -76,22 +77,25 @@ class UserController extends Controller
 
     public function verifying(Request $request, $id)
     {
-        $user = User::with('documents')->findOrFail($id);
+        $document = Document::where('type', $request->type)
+            ->where('user_id', $id)
+            ->first();
 
-        if (!$user->insurance_img) {
-            return back()->withErrors(['error' => 'The insurance is required.']);
+        if (! $document) {
+            return back()->withErrors(['error' => 'The document is not found.'], 404);
         }
 
-        $missingDocument = $user->documents->firstWhere('document_url', null);
+        $document->update(['status' => $request->status]);
 
-        if ($missingDocument) {
-            return back()->withErrors(['error' => "The {$missingDocument->type} is required."]);
-        }
+        $allDocumentsVerified = !Document::where('user_id', $id)
+            ->where('status', '!=', Document::VERIFIED)
+            ->exists();
 
-        $user->update(['is_verified_document' => true]);
+        User::where('id', $id)->update(['is_verified_document' => $allDocumentsVerified]);
 
-        return redirect()->route('users.index');
+        return redirect()->back()->with(['success' => 'Document status updated successfully.']);
     }
+
 
 
     public function edit(User $user)

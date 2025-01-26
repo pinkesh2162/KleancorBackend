@@ -15,9 +15,16 @@ class Document extends Model
         'user_id',
         'document_url',
         'type',
+        'status',
     ];
-    
+
+//    status
+    const IN_PROGRESS = 0;
+    const VERIFIED = 1;
+    const REJECTED = 2;
+
 //    type
+    const INSURANCE = 'insurance';
     const OFFICIAL_ID = 'official_id';
     const CERTIFICATE = 'certificate';
     const RESUME = 'resume';

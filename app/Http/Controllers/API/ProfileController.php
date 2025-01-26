@@ -24,16 +24,16 @@ class ProfileController extends BaseController
         $data['locationData'] = DB::table('locations')->select('name', 'zip')->whereIn('id', $locations_id)
             ->get();
 
-        $userDocuments = Document::toBase()->where('user_id', $request->id)->select('type', 'document_url')->get();
+        $userDocuments = Document::toBase()->where('user_id', $request->id)->select('type', 'document_url','status')->get();
 
-        if ($userDocuments->count() > 0) {
-            if ($data['userData']->insurance_img) {
-                $userDocuments->push([
-                    'document_url' => $data['userData']->insurance_img,
-                    'type' => 'insurance_img'
-                ]);
-            }
-        }
+//        if ($userDocuments->count() > 0) {
+//            if ($data['userData']->insurance_img) {
+//                $userDocuments->push([
+//                    'document_url' => $data['userData']->insurance_img,
+//                    'type' => 'insurance_img'
+//                ]);
+//            }
+//        }
 
         $data['userData']->documents = $userDocuments;
 
