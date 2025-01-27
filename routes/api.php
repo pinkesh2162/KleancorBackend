@@ -43,6 +43,7 @@ Route::group([
     Route::post('job-posting', [JobPostingController::class, 'index']);
     Route::get('job-edit/{id}/{time}', [JobPostingController::class, 'job_edit']);
     Route::post('job-update', [JobPostingController::class, 'job_update']);
+    Route::get('get-decline-jobs', [JobPostingController::class, 'geWorkerDeclineJob']);
     Route::get('house-keepings/{id}', [HomeScreenController::class, 'house_keepings']);
     Route::get('location', [HomeScreenController::class, 'location']);
     Route::get('home', [HomeScreenController::class, 'category']);
@@ -53,8 +54,9 @@ Route::group([
     Route::get('job-details/{id}/{userId}', [JobPostingController::class, 'job_deatils']);
     Route::post('job-apply', [JobPostingController::class, 'job_apply']);
     Route::get('proposal-list/{id}', [JobPostingController::class, 'proposal_list']);
-    Route::get('client-offer-list/{userid}', [JobPostingController::class, 'client_offer_list']);
     Route::post('complete-hire', [JobPostingController::class, 'complete_hire']);
+    Route::post('accept-offer', [JobPostingController::class, 'accept_offer']);
+    Route::get('client-offer-list/{userid}', [JobPostingController::class, 'client_offer_list']);
     Route::get('payment/{id}', [JobPostingController::class, 'payment']);
     Route::post('completed-job-info', [JobPostingController::class, 'completed_job_info']);
     Route::post('recent-search-save', [JobPostingController::class, 'recent_search_save']);
@@ -62,7 +64,6 @@ Route::group([
     Route::get('job-search/{keyword}', [JobPostingController::class, 'job_search']);
     Route::get('job-list-search/{keyword}/{start}/{status}', [JobPostingController::class, 'job_list_search']);
     Route::get('category-search/{keyword}', [HomeScreenController::class, 'category_search']);
-    Route::post('accept-offer', [JobPostingController::class, 'accept_offer']);
     Route::post('complete-review', [JobPostingController::class, 'complete_review']);
     Route::get('load-client-profile/{id}', [JobPostingController::class, 'load_client_profile']);
     Route::get('load-worker-profile/{id}', [JobPostingController::class, 'load_worker_profile']);

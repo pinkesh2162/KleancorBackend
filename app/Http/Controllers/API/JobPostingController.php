@@ -197,12 +197,12 @@ class JobPostingController extends BaseController // New Change
 
     public function geWorkerDeclineJob(Request $request)
     {
-        $jobs = Job::whereJsonContain('exclude_users', (int) $request->userId)
+        $jobs = Job::whereJsonContains('exclude_users', (int) $request->userId)
             ->skip($request->start)->take($this->settings->job_limit)
+            ->where('status', Job::NEW)
             ->orderBy("id", "desc")
             ->get();
-
-
+        
         return response()->json($jobs);
     }
     

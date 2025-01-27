@@ -181,9 +181,17 @@ class AuthController extends BaseController
     public function login(Request $request)
     {
         $auth_type = $request->auth_type;
-
+       $existingUser =  User::where('email', '=', $request->email)
+           ->whereNull('deleted_at')
+           ->where('status',User::DE_ACTIVE)->exists();
+       
+       if ($existingUser){
+           return response()->json(['errorMessage' => 'Your account is currently deactivated. Please contact the admin.']);
+       }
+        
         if ($auth_type == 1) {
-            if (User::where('email', '=', $request->email)->whereNull('deleted_at')->first()) {
+            if (User::where('email', '=', $request->email)
+                ->where('status', User::ACTIVE)->whereNull('deleted_at')->first()) {
                 $user = User::where('email', '=', $request->email)->whereNull('deleted_at')->first();
                 $user['token'] =  $user->createToken('MyApp')->plainTextToken;
                 return $this->sendResponse($user, 'User already registered.');
@@ -196,6 +204,7 @@ class AuthController extends BaseController
                 }
                 $input = $request->all();
                 $input['refer_code'] = $refer_code;
+                $input['status'] = User::ACTIVE;
                 $user = User::create($input);
                 $success['token'] =  $user->createToken('MyApp')->plainTextToken;
                 $success['id'] =  $user->id;
@@ -218,7 +227,23 @@ class AuthController extends BaseController
                         DB::table('referrals')->insert(['refer_id' => $user->id, 'referrer_id' => $code->id]);
                     }
                 }
-
+                try {
+                    setEmailConfiguration();
+                    Mail::send('emails/new-user', ['user' => $user], function ($message) use ($user) {
+                        $message->to($user['email'])->subject('Welcome to '.config('app.name'));
+                    });
+                    Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
+                        $message->to(config('app.admin_email'))->subject('New user register to '.config('app.name'));
+                    });
+                    Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
+                        $message->to(config('app.admin_email_2'))->subject('New user register to '.config('app.name'));
+                    });
+                    Mail::send('emails/admin-new-user', ['user' => $user], function ($message) use ($user) {
+                        $message->to('kleancor@icloud.com')->subject('New user register to '.config('app.name'));
+                    });
+                } catch (\Throwable $th) {
+                    \Log::info($th);
+                }
                 return $this->sendResponse($success, 'User register successfully.');
             }
         } else {
