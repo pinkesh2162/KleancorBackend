@@ -28,7 +28,21 @@ class FirebaseService
             'notification' => [
                 'title' => $title,
                 'body' => $body,
-            ]
+            ],
+            'android' => [
+                'priority' => 'high', 
+                'notification' => [
+                    'sound' => 'default',
+                    'channel_id' => 'mychannel',
+                ],
+            ],
+            'apns' => [
+                'payload' => [
+                    'aps' => [
+                        'sound' => 'default',
+                    ],
+                ],  
+            ],
         ];
 
         try {
