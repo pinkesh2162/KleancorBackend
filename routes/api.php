@@ -41,6 +41,7 @@ Route::group([
     'middleware' => 'api'
 ], function ($router) {
     Route::post('job-posting', [JobPostingController::class, 'index']);
+    Route::post('job/delete/{id}', [JobPostingController::class, 'destroy']);
     Route::get('job-edit/{id}/{time}', [JobPostingController::class, 'job_edit']);
     Route::post('job-update', [JobPostingController::class, 'job_update']);
     Route::get('get-decline-jobs', [JobPostingController::class, 'geWorkerDeclineJob']);

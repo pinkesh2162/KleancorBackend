@@ -135,6 +135,7 @@ class JobPostingController extends BaseController // New Change
             ->join('locations', 'locations.id', '=', 'jobs.locations_id')
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
             ->where('jobs.id', $id)
+            ->whereNull('jobs.deleted_at')
             ->orderBy("id", "desc")
             ->first();
         return response()->json($data);
@@ -163,6 +164,7 @@ class JobPostingController extends BaseController // New Change
                 'users.fcm_token'
             )
             ->join('users', 'users.id', '=', 'jobs.poster_id')
+            ->whereNull('jobs.deleted_at')
             ->where('jobs.id', $data->jobId)->first();
 
         if (isset($jobData->fcm_token) && $jobData->fcm_token != null) {
@@ -190,6 +192,7 @@ class JobPostingController extends BaseController // New Change
     {
         $data = DB::table("jobs")
             ->select('*')
+            ->whereNull('deleted_at')
             ->find($id);
         $data->dead_line = JobPostingController::timeZoneConverter(str_replace(' ', ',', $data->dead_line), $this->settings->time_zone, 'Asia/Dhaka');
         return response()->json($data);
@@ -214,6 +217,7 @@ class JobPostingController extends BaseController // New Change
                 'jobs.title',
                 'jobs.job_type',
                 'jobs.price',
+                'jobs.poster_id',
                 'locations.name as lname',
                 'locations.zip',
                 'categories.picture',
@@ -227,8 +231,12 @@ class JobPostingController extends BaseController // New Change
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
             ->join('users', 'users.id', '=', 'jobs.poster_id') // New Change
             ->where('jobs.status', $status)
+            ->whereNull('jobs.deleted_at')
             ->when(!empty($request->userId), function ($query) use ($request) {
-                $query->whereJsonDoesntContain('jobs.exclude_users', (int)$request->userId)->orWhereNull('jobs.exclude_users');
+                $query->where(function($query)use($request){
+                    $query->whereJsonDoesntContain('jobs.exclude_users', (int)$request->userId)
+                        ->orWhereNull('jobs.exclude_users');  
+                });
             })
             ->skip($start)->take($this->settings->job_limit)
             ->orderBy("id", "desc")
@@ -265,6 +273,7 @@ class JobPostingController extends BaseController // New Change
             )
             ->join('locations', 'locations.id', '=', 'jobs.locations_id')
             ->join('users', 'users.id', '=', 'jobs.poster_id')
+            ->whereNull('jobs.deleted_at')
             ->join('categories', 'categories.id', '=', 'jobs.categories_id');
 
         if ($status == 1) {
@@ -405,6 +414,7 @@ class JobPostingController extends BaseController // New Change
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
             ->join('users', 'users.id', '=', 'jobs.poster_id') // New Change
             ->where('jobs.status', $status)
+            ->whereNull('jobs.deleted_at')
             ->where(function ($query) use ($keyword) {
                 return $query->where('locations.name', 'like', "%{$keyword}%")->orWhere('locations.zip', 'like', "%{$keyword}%")->orWhere('jobs.title', 'like', "%{$keyword}%");
             })
@@ -430,6 +440,7 @@ class JobPostingController extends BaseController // New Change
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
             ->join('users', 'users.id', '=', 'jobs.poster_id') // New Change
             ->where('jobs.status', $status)
+            ->whereNull('jobs.deleted_at')
             ->where(function ($query) use ($keyword) {
                 return $query->where('locations.name', 'like', "%{$keyword}%")->orWhere('locations.zip', 'like', "%{$keyword}%")->orWhere('jobs.title', 'like', "%{$keyword}%");
             })->count();
@@ -486,8 +497,7 @@ class JobPostingController extends BaseController // New Change
         $success = $request->userInput;
         $data = json_decode($success);
         if ($data->status == Job::DECLINE) {
-            $jobData =
-                DB::table('jobs')->where('id', $data->jobId)->first();
+            $jobData = DB::table('jobs')->whereNull('deleted_at')->where('id', $data->jobId)->first();
 
             $excludeUsers = $jobData->exclude_users;
             if (empty($excludeUsers)) {
@@ -498,14 +508,14 @@ class JobPostingController extends BaseController // New Change
 
             Application::where('jobs_id', $data->jobId)->where('users_id', $jobData->awards_id)->delete();
 
-            DB::table('jobs')->where('id', $data->jobId)->update([
+            DB::table('jobs')->whereNull('deleted_at')->where('id', $data->jobId)->update([
                 'awards_id' => null,
                 'final_price' => null,
                 'status' => Job::NEW,
                 'exclude_users' => $excludeUsers
             ]);
         } else {
-            DB::table('jobs')->where('id', $data->jobId)->update(['status' => $data->status]);
+            DB::table('jobs')->whereNull('deleted_at')->where('id', $data->jobId)->update(['status' => $data->status]);
         }
     }
 
@@ -514,7 +524,7 @@ class JobPostingController extends BaseController // New Change
         $success = $request->userInput;
         $data = json_decode($success);
         if ($data->type == 'client') {
-            $jobData = DB::table('jobs')->where('id', $data->jobId)->first();
+            $jobData = DB::table('jobs')->whereNull('deleted_at')->where('id', $data->jobId)->first();
             $total_amount = 0;
             if ($jobData->job_type == 1) {
                 $total_amount = $jobData->final_price * $data->totalHour;
@@ -541,7 +551,7 @@ class JobPostingController extends BaseController // New Change
             ];
         }
 
-        DB::table('jobs')->where('id', $data->jobId)->update($arr);
+        DB::table('jobs')->whereNull('deleted_at')->where('id', $data->jobId)->update($arr);
     }
 
     public function load_worker_profile($id)
@@ -723,6 +733,7 @@ class JobPostingController extends BaseController // New Change
             ->join('users', 'users.id', '=', 'jobs.poster_id')
             ->join('categories', 'categories.id', '=', 'jobs.categories_id')
             ->where('jobs.status', 5)
+            ->whereNull('jobs.deleted_at')
             ->where('jobs.awards_id', $userId)
             ->skip($start)->take($this->settings->job_limit)
             ->orderBy("jobs.id", "desc")
@@ -759,5 +770,14 @@ class JobPostingController extends BaseController // New Change
             ->orderBy("applications.id", "asc")
             ->get();
         return response()->json($data);
+    }
+    
+    public function destroy($id){
+        $job = Job::where('id', $id)->first();
+        if (empty($job)){
+            return response()->json(['errorMessage' => 'job is not found.'], 404);
+        }
+        $job->delete();
+        return response()->json(['successMessage' => 'job deleted successfully.']);
     }
 }
