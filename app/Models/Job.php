@@ -48,7 +48,9 @@ class Job extends Model
         'worker_rating2',
         'worker_rating3',
         'worker_comment',
-        'exclude_users'
+        'exclude_users',
+        'disable_ids',
+        'is_complete'
     ];
 
     protected $casts = [
@@ -57,9 +59,43 @@ class Job extends Model
 
     // status of job
     const NEW = 1;
+    //inprogress 2
     const HIRED = 2;
     const ACCEPT = 3;
-    // const CLIENT_DECLINE = 4;
+//     const WORKER_COMPLETE = 4;
     const COMPLETE = 5;
     const DECLINE = 6;
+    
+    public function location(){
+        return $this->belongsTo(Location::class,'locations_id','id');
+    }
+    public function category(){
+        return $this->belongsTo(Category::class,'categories_id','id');
+    }
+    
+    public function user(){
+        return $this->belongsTo(User::class,'poster_id','id');
+    }
+    
+    public function jobHistory(){
+        return $this->hasMany(JobHistory::class,'job_id','id');
+    }
+    
+    public function application(){
+        return $this->hasOne(Application::class,'jobs_id','id');
+    }
+    
+    public function scopeFilter($query, $filter)
+    {
+        return $query
+            ->when(isset($filter['status']) && ! empty($filter['status']), function ($qr) use ($filter) {
+                return $qr->where('status', $filter['status']);
+            })
+            ->when(isset($filter['exclude_user']) && ! empty($filter['exclude_user']), function ($qr) use ($filter) {
+                return $qr->where(function ($query)use($filter){
+                    $query->whereJsonDoesntContain('exclude_users', (int)$filter['exclude_user'])
+                        ->orWhereNull('exclude_users');
+                });
+            });
+    }
 }
