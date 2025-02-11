@@ -125,18 +125,19 @@ Route::middleware(['cors'])->group(function () {
 });
 
 Route::post('/create-payment-user/{id}', [PaymentMethodController::class, 'createPaymentUser']);
+Route::post('/transfer-to-user/{id}',[PaymentMethodController::class, 'createTransfer']);
+Route::post('/create-transfer-money/{id}', [PaymentMethodController::class, 'transferToBankAccount']);
+Route::post('/create-bank-stripe-account/{id}', [PaymentMethodController::class, 'linkBankAccount']);
 
 //create account 
 Route::post('/create-vendor-stripe-account/{id}', [PaymentMethodController::class, 'createStripeAccount']);
 
 //connect account or link account to stripe
-Route::post('/create-bank-stripe-account/{id}', [PaymentMethodController::class, 'linkBankAccount']);
 
 //create transfer for payroll
-Route::post('/create-transfer/{id}', [PaymentMethodController::class, 'createTransfer']);
+//Route::post('/create-transfer/{id}', [PaymentMethodController::class, 'createTransfer']);
 
 //transfer bank account money
-Route::post('/create-transfer-money/{id}', [PaymentMethodController::class, 'transferToBankAccount']);
 
 //delete account 
 Route::delete('/delete-stripe-account/{id}', [PaymentMethodController::class, 'deleteStripeAccount']);

@@ -57,6 +57,7 @@ class User extends Authenticatable
         'linked_in_url',
         'payment_customer_id',
         'stripe_bank_id',
+        'connected_account_id',
     ];
 
     const ACTIVE = 1;

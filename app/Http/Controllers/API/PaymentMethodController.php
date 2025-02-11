@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Card;
 use App\Models\PaymentMethod;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -121,7 +122,7 @@ class PaymentMethodController extends BaseController
         $paymentMethod->attach(['customer' => $user->payment_customer_id]);
         try {
             $paymentIntent = PaymentIntent::create([
-                'amount' => $request->amount * 100, // Convert to cents
+                'amount' => $request->amount * 100, 
                 'currency' => 'usd',
                 'customer' => $user->payment_customer_id,
                 'payment_method' => $paymentMethod->id,
@@ -139,16 +140,22 @@ class PaymentMethodController extends BaseController
                         'country' => 'US',
                     ],
                 ],
-                //                'metadata' => [
-                //                    'discount' => $discount,
-                //                ],
+            ]);
+            Transaction::create([
+                'user_id' => $id,
+                'payment_details' => [
+                    'payment_id' => @$paymentIntent->id,
+                    'amount' => @$paymentIntent->amount / 100,
+                    'payment_method_types' => @$paymentIntent->payment_method_types,
+                    'status' => @$paymentIntent->status
+                ]
             ]);
             return response()->json($paymentIntent);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
+    
     public function createStripeToken($cardInput)
     {
         Stripe::setApiKey(config('app.stripe_public'));
@@ -193,37 +200,35 @@ class PaymentMethodController extends BaseController
         return response()->json(['message' => 'account deleted successfully']);
     }
     //for create account
-    public function createStripeAccount(Request $request, $id)
+    public function createStripeAccount( $id)
     {
+        
         Stripe::setApiKey(config('app.stripe_secret'));
         $user = User::find($id);
         if (empty($user)) {
             return response()->json(['error' => 'User not found.'], 404);
         }
-        if (! empty($user->payment_customer_id)) {
-            return response()->json(['error' => 'Already created account.'], 404);
-        }
-
+       
         try {
             $account = \Stripe\Account::create([
                 'type' => 'custom',
-                'country' => $request->country,
+                'country' => 'US',
                 'email' => $user->email,
                 'business_type' => 'individual',
                 'individual' => [
                     'address' => [
-                        'line1' => $request->address,
-                        'postal_code' => $request->postal_code,
-                        'state' => $request->state,
-                        'city' => $request->city,
+                        'line1' => '123 Example St',
+                        'postal_code' => '2000',
+                        'state' => 'CA',
+                        'city' => 'San Francisco',
                     ],
                     'dob' => [
-                        'day' => $request->dob['day'],
-                        'month' => $request->dob['month'],
-                        'year' => $request->dob['year'],
+                        'day' => '1',
+                        'month' => '1',
+                        'year' => '1901',
                     ],
                     'email' => $user->email,
-                    'phone' => $request->phone,
+                    'phone' => '7698938733',
                     'first_name' => $user->first_name,
                     'last_name' => $user->last_name,
                     'maiden_name' => $user->first_name . ' ' . $user->last_name,
@@ -232,23 +237,22 @@ class PaymentMethodController extends BaseController
                 'business_profile' => [
                     'mcc' => '4215',
                     'product_description' => 'Business service',
-                    'support_email' => 'rahul@gmail.com',
+                    'support_email' => 'test@gmail.com',
                     'support_phone' => '+14155552672',
                     'url' => 'https://accessible.stripe.com',
                 ],
                 'tos_acceptance' => [
                     'date' => time(),
-                    'ip' => $request->ip(),
+                    'ip' => '8.8.8.8',
                 ],
                 'capabilities' => [
                     'card_payments' => ['requested' => true],
                     'transfers' => ['requested' => true],
                 ],
             ]);
+            $user->update(['connected_account_id' => $account->id]);
 
-            $user->update(['payment_customer_id' => $account->id]);
-
-            return response()->json(['message' => 'account created successfully.'], 201);
+            return $user;
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -261,7 +265,7 @@ class PaymentMethodController extends BaseController
         if (empty($user)) {
             return response()->json(['error' => 'User not found.'], 404);
         }
-        if (empty($user->payment_customer_id)) {
+        if (empty($user->connected_account_id)) {
             return response()->json(['error' => 'Stripe Account not found.'], 404);
         }
 
@@ -274,8 +278,8 @@ class PaymentMethodController extends BaseController
         // Create a bank account token
         $token = \Stripe\Token::create([
             'bank_account' => [
-                'country'             => $request->country,
-                'currency'            => $request->currency,
+                'country'             => 'US',
+                'currency'            => 'usd',
                 'account_holder_name' => $user->first_name . ' ' . $user->last_name,
                 'account_holder_type' => 'individual',
                 'routing_number'      => '110000000',
@@ -284,7 +288,7 @@ class PaymentMethodController extends BaseController
         ]);
 
         $externalAccount = \Stripe\Account::createExternalAccount(
-            $user->payment_customer_id,
+            $user->connected_account_id,
             ['external_account' => $token->id,]
         );
 
@@ -300,17 +304,20 @@ class PaymentMethodController extends BaseController
         if (empty($user)) {
             return response()->json(['error' => 'User not found.'], 404);
         }
-        if (empty($user->payment_customer_id)) {
-            return response()->json(['error' => 'Stripe Account not found.'], 404);
+        if (empty($user->connected_account_id)) {
+          $user = $this->createStripeAccount($id);
         }
-
         Stripe::setApiKey(config('app.stripe_secret'));
-
+        
+        if (empty($user->stripe_bank_id)){
+            return response()->json(['error' => 'User have not bank account.'], 500);
+        }
+        
         try {
             $transfer = Transfer::create([
                 'amount' => $request->amount * 100,
-                'currency' => $request->currency,
-                'destination' => $user->payment_customer_id,
+                'currency' => 'usd',
+                'destination' => $user->connected_account_id,
                 'transfer_group' => 'ADMIN_PAYMENT',
             ]);
 
@@ -327,26 +334,19 @@ class PaymentMethodController extends BaseController
         if (empty($user)) {
             return response()->json(['error' => 'User not found.'], 404);
         }
-        if (empty($user->payment_customer_id)) {
-            return response()->json(['error' => 'Stripe Account not found.'], 404);
-        }
-
-        if (empty($user->stripe_bank_id)) {
-            return response()->json(['error' => 'Stripe bank Account not found.'], 404);
-        }
-
+        
         Stripe::setApiKey(config('app.stripe_secret'));
 
         try {
             $payout = \Stripe\Payout::create(
                 [
                     'amount'      => round($request->amount * 100),
-                    'currency'    => $request->currency,
+                    'currency'    => 'usd',
                     'destination' => $user->stripe_bank_id,
                     'description' => 'Payout to external bank account',
                 ],
                 [
-                    'stripe_account' => $user->payment_customer_id,
+                    'stripe_account' => $user->connected_account_id,
                 ]
             );
 
