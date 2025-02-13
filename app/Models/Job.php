@@ -65,6 +65,7 @@ class Job extends Model
 //     const WORKER_COMPLETE = 4;
     const COMPLETE = 5;
     const DECLINE = 6;
+    const CLOSE = 7;
     
     public function location(){
         return $this->belongsTo(Location::class,'locations_id','id');

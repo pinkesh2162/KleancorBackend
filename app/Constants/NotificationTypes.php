@@ -10,6 +10,8 @@ class NotificationTypes
     const SEND_MESSAGE = 5;    // Send Message Notification
     const NEW_JOB_APPLICATION = 6; // New Job Application Notification
     const REQUEST_INFORMATION = 7; // request information from worker
+    const OFFER_REJECT = 8;    // Offer Accept Reject Notification
+    const OFFER_REJECT_BY_CLIENT = 9;    // Offer Accept Reject Notification
 }
 
 ?>

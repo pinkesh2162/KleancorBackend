@@ -59,13 +59,35 @@ Route::group([
 //    Route::post('jobs/decline/worker', [JobPostingController::class, 'JobDeclineByWorker']);
 //acce worker if intrest of client offer
 //    Route::post('jobs/accept/worker', [JobPostingController::class, 'JobDeclineByWorker']);
-    Route::get('job-list/{start}/{status}', [JobPostingController::class, 'job_list']);
-    Route::post('reject-complete-hire', [JobPostingController::class, 'rejectWorkerByClient']);
-    Route::post('complete-hire', [JobPostingController::class, 'complete_hire']);
-    Route::get('get-worker-decline-jobs', [JobPostingController::class, 'geWorkerDeclineJob']);
-    Route::post('request-information', [JobPostingController::class, 'requestInformation']);
-    Route::post('complete-worker-request', [JobPostingController::class, 'completeRequestWorker']);
+
+    //worker decline job accept offer time 
+    Route::get('get-accept-offer-decline-jobs', [JobPostingController::class, 'geWorkerDeclineJob']);
+
+    //get client decline job only not worker
     Route::get('get-client-decline-jobs', [JobPostingController::class, 'geClientDeclineJob']);
+
+    //get all client decline job worker or client
+    Route::get('get-decline-client-or-worker-jobs', [JobPostingController::class, 'getDeclineClientOrWorkerJobs']);
+
+    //worker to client request information some modify
+    Route::post('request-information', [JobPostingController::class, 'requestInformation']);
+
+    //delete history by client
+    Route::post('delete-job-history-by-client', [JobPostingController::class, 'deleteJobHistoryByClient']);
+
+    //delete history by worker
+    Route::post('delete-job-history-by-worker', [JobPostingController::class, 'deleteJobHistoryByWorker']);
+
+    //reject in progress job by client
+    Route::post('decline-in-progress-job-by-client', [JobPostingController::class, 'rejectJobInProgressByClient']);
+
+    //reject in progress job by worker
+    Route::post('decline-in-progress-job-by-worker', [JobPostingController::class, 'rejectJobInProgressByWorker']);
+    
+    Route::post('reject-complete-hire', [JobPostingController::class, 'rejectWorkerByClient']);
+    Route::get('job-list/{start}/{status}', [JobPostingController::class, 'job_list']);
+    Route::post('complete-hire', [JobPostingController::class, 'complete_hire']);
+    Route::post('complete-worker-request', [JobPostingController::class, 'completeRequestWorker']);
     Route::post('accept-offer', [JobPostingController::class, 'accept_offer']);
     Route::get('proposal-list/{id}', [JobPostingController::class, 'proposal_list']);
     Route::post('job-apply', [JobPostingController::class, 'job_apply']);
@@ -76,15 +98,10 @@ Route::group([
     Route::get('house-keepings/{id}', [HomeScreenController::class, 'house_keepings']);
     Route::get('location', [HomeScreenController::class, 'location']);
     Route::get('home', [HomeScreenController::class, 'category']);
-    Route::get('job-list/{start}/{status}', [JobPostingController::class, 'job_list']);
     Route::get('profile-job-list/{start}/{status}/{userid}/{type}', [JobPostingController::class, 'profile_job_list']);
     Route::get('worker-completed-jobs/{start}/{userid}', [JobPostingController::class, 'worker_completed_jobs']);
     Route::get('settings', [HomeScreenController::class, 'settings']);
     Route::get('job-details/{id}/{userId}', [JobPostingController::class, 'job_deatils']);
-    Route::post('job-apply', [JobPostingController::class, 'job_apply']);
-    Route::get('proposal-list/{id}', [JobPostingController::class, 'proposal_list']);
-    Route::post('complete-hire', [JobPostingController::class, 'complete_hire']);
-    Route::post('accept-offer', [JobPostingController::class, 'accept_offer']);
     Route::get('client-offer-list/{userid}', [JobPostingController::class, 'client_offer_list']);
     Route::get('payment/{id}', [JobPostingController::class, 'payment']);
     //job complete by client
