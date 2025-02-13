@@ -90,7 +90,7 @@ class JobPostingController extends BaseController // New Change
     public function edit(Request $request, $id)
     {
         $job = Job::findOrFail($id);
-        
+
         $job->dead_line = JobPostingController::timeZoneConverter(str_replace(' ', ',', $job->dead_line), $this->settings->time_zone, 'Asia/Dhaka');
         return response()->json($job);
     }
@@ -106,12 +106,12 @@ class JobPostingController extends BaseController // New Change
 
         return response()->json($data);
     }
-        
+
         public function job_apply(Request $request)
     {
         $success = $request->userInput;
         $success = json_encode($success);
-        $data = json_decode($success);  
+        $data = json_decode($success);
 
         $arr = [
             'jobs_id' => $data->jobId,
@@ -119,7 +119,7 @@ class JobPostingController extends BaseController // New Change
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
-        
+
         DB::beginTransaction();
         try {
             $applications = DB::table('applications')->insert($arr);
@@ -171,7 +171,7 @@ class JobPostingController extends BaseController // New Change
             }
             Job::where('id',$jobData->id)->first()->update(['disable_ids' => $disable_ids]);
             DB::commit();
-            
+
             return response()->json($applications);
         }catch (\Exception $exception){
             DB::commit();
@@ -214,17 +214,17 @@ class JobPostingController extends BaseController // New Change
 //            } else {
 //                array_push($excludeUsers, $input['user_id']);
 //            }
-//            
+//
 //            $job->update(['exclude_users' => $excludeUsers]);
-//            
+//
 //            DB::commit();
-//            return response()->json($applications);   
+//            return response()->json($applications);
 //        }catch (\Exception $exception){
 //            DB::rollBack();
 //            return response()->json($exception->getMessage(), $exception->getCode());
 //        }
 //    }
-    
+
     //proposal list
 //    public function jobApplyList(Request $request){
 //        $users = User::whereHas('application', function($query)use($request){
@@ -232,10 +232,10 @@ class JobPostingController extends BaseController // New Change
 //        })
 //            ->select('id','first_name','last_name','about','gender','avatar')
 //            ->orderBy("id", "asc")->get();
-//        
+//
 //        return response()->json($users);
 //    }
-    
+
 //    hire worker
 //    public function hireWorkerByClient(Request $request)
 //    {
@@ -252,7 +252,7 @@ class JobPostingController extends BaseController // New Change
 //        ], 200);
 //    }
 
-    //accept client job by worker 
+    //accept client job by worker
 //    public function acceptClientJobOffer(Request $request)
 //    {
 //        Job::findOrFail($request->job_id)->update(['status' => Job::ACCEPT]);
@@ -304,7 +304,7 @@ class JobPostingController extends BaseController // New Change
 
         return response()->json(['error' => true,'message' => 'Client not available']);
     }
-    
+
     public function completeRequestWorker(Request $request){
         $job = Job::findOrFail($request->jobId);
         $client = User::findOrFail($job->poster_id);
@@ -324,19 +324,19 @@ class JobPostingController extends BaseController // New Change
 
             $this->firebaseService->sendNotification($deviceToken, $title, $body);
         }
-        
+
         $job->update(['is_complete' => true]);
         return response()->json(['worker job completed successfully.']);
     }
-    
+
     public function geClientDeclineJob(Request $request)
     {
         $jobs = JobHistory::where('decline_by',$request->userId)
-            ->where('type', JobHistory::CLIENT)
+            ->where('type',null)
             ->with(['job','worker'])
             ->skip($request->start)->take($this->settings->job_limit)
             ->get();
-        
+
 //        $jobs = Job::whereHas('jobHistory', function ($query)use($request){
 //            return $query->where('status', Job::NEW)->where('client_id',$request->userId);
 //        })->with('jobHistory', function ($query)use($request){
@@ -353,9 +353,10 @@ class JobPostingController extends BaseController // New Change
 
         return response()->json($jobs);
     }
-    
+
     public function getDeclineClientOrWorkerJobs(Request $request){
-        $jobs = JobHistory::where('decline_by',$request->userId)
+        $jobs = JobHistory::where($request->type,$request->userId)
+            ->where('type',null)
             ->with(['job','worker'])
             ->skip($request->start)->take($this->settings->job_limit)
             ->get();
@@ -363,17 +364,37 @@ class JobPostingController extends BaseController // New Change
         return response()->json($jobs);
     }
 
+    public function getInProgressDeclineJobByClient(Request $request)
+    {
+        $jobs = JobHistory::where('client_id', $request->userId)
+            ->where('type', JobHistory::CLIENT)
+            ->with(['job', 'worker'])
+            ->get();
+
+        return response()->json($jobs);
+    }
+
+    public function getInProgressDeclineJobByWorker(Request $request)
+    {
+        $jobs = JobHistory::where('worker_id', $request->userId)
+            ->where('type', JobHistory::WORKER)
+            ->with(['job', 'client'])
+            ->get();
+
+        return response()->json($jobs);
+    }
+
     public function geWorkerDeclineJob(Request $request)
     {
-        $jobs = JobHistory::where('type', JobHistory::WORKER)
-            ->where('decline_by', $request->userId)
+        $jobs = JobHistory::where('decline_by', $request->userId)
+            ->where('type',null)
             ->with(['job', 'client'])
             ->skip($request->start)->take($this->settings->job_limit)
             ->get();
 
         return response()->json($jobs);
     }
-    
+
     public function job_list(Request $request, $start, $status)
     {
         $data['jobList'] = Job::
@@ -415,7 +436,7 @@ class JobPostingController extends BaseController // New Change
 
         return response()->json($data);
     }
-    
+
     public function proposal_list($jobId)
     {
         $data = DB::table("users")
@@ -433,9 +454,9 @@ class JobPostingController extends BaseController // New Change
             ->orderBy("id", "asc")
             ->get()
         ->filter(function ($item)use($jobId){
-           return Job::where('id',$item->jobs_id)->where('status',Job::NEW)->exists(); 
+           return Job::where('id',$item->jobs_id)->where('status',Job::NEW)->exists();
         });
-        
+
         return response()->json($data);
     }
 
@@ -487,7 +508,7 @@ class JobPostingController extends BaseController // New Change
             ], 400);
         }
     }
-    
+
     public function job_deatils($id, $userId)
     {
         $data = DB::table("jobs")
@@ -514,7 +535,7 @@ class JobPostingController extends BaseController // New Change
             ->first();
         return response()->json($data);
     }
-    
+
     public static function timeZoneConverter($time = "", $fromTz = '', $toTz = '')
     {
         $time = explode(',', $time);
@@ -524,7 +545,7 @@ class JobPostingController extends BaseController // New Change
         $time = $date->format('Y-m-d H:i:s');
         return $time;
     }
-    
+
     //calling if worker hired status = 2
     public function profile_job_list($start, $status, $userId, $type)
     {
@@ -584,7 +605,7 @@ class JobPostingController extends BaseController // New Change
         $data['totalJob'] = Job::where('poster_id', $userId)->where('status', $status)->count();
         return response()->json($data);
     }
-    
+
     public function complete_hire(Request $request)
     {
         $success = $request->userInput;
@@ -616,7 +637,7 @@ class JobPostingController extends BaseController // New Change
             $input = $request->all();
             $job = Job::where('id',$input['job_id'])->first();
             $application = Application::where('jobs_id', $job->id)->first();
-            
+
             //create history for client
             JobHistory::updateOrCreate(
                 [
@@ -651,8 +672,8 @@ class JobPostingController extends BaseController // New Change
                 'worker_id' => $application->users_id,
                 'client_id' => $job->poster_id,
                 'status'  => $job->status,
-                'decline_by'  => $application->users_id,
-                'type' => JobHistory::CLIENT
+                'decline_by'  => $job->poster_id,
+                'type' => JobHistory::WORKER
             ]);
 
             $excludeUsers = $job->exclude_users;
@@ -662,7 +683,7 @@ class JobPostingController extends BaseController // New Change
                 });
                 $excludeUsers = count($excludeUsers) > 0  ? $excludeUsers  : null;
             }
-            
+
             $job->update([
                 'exclude_users' => $excludeUsers,
                 'status' => Job::CLOSE,
@@ -685,7 +706,7 @@ class JobPostingController extends BaseController // New Change
 //
 //                $this->firebaseService->sendNotification($deviceToken, $title, $body);
 //            }
-            
+
             $application->delete();
             DB::commit();
 
@@ -698,7 +719,7 @@ class JobPostingController extends BaseController // New Change
             return response()->json($exception->getMessage());
         }
     }
-    
+
     //reject client
     public function rejectWorkerByClient(Request $request)
     {
@@ -707,7 +728,7 @@ class JobPostingController extends BaseController // New Change
             $input = $request->all();
             $job = Job::findOrFail($input['job_id']);
             $application = Application::where('jobs_id', $job->id)->first();
-            
+
             //create history for client
             JobHistory::updateOrCreate(
                 [
@@ -724,27 +745,8 @@ class JobPostingController extends BaseController // New Change
                 'client_id' => $job->poster_id,
                 'status'  => $job->status,
                 'decline_by'  => $job->poster_id,
-                'type' => JobHistory::CLIENT
             ]);
-            
-            // create history for worker
-            JobHistory::updateOrCreate(
-                [
-                    'job_id'  => $job->id,
-                    'worker_id' => $application->users_id,
-                    'client_id' => $job->poster_id,
-                    'status'  => Job::NEW,
-                    'decline_by'  => $application->users_id,
-                ]
-                ,[
-                'reason'  => $request->reason,
-                'job_id'  => $job->id,
-                'worker_id' => $application->users_id,
-                'client_id' => $job->poster_id,
-                'status'  => $job->status,
-                'decline_by'  => $application->users_id,
-                'type' => JobHistory::CLIENT
-            ]);
+
 
             $excludeUsers = $job->exclude_users;
             if (!empty($excludeUsers) && in_array($application->users_id,$excludeUsers)){
@@ -753,30 +755,29 @@ class JobPostingController extends BaseController // New Change
                 });
                 $excludeUsers = count($excludeUsers) > 0  ? $excludeUsers  : null;
             }
-            
-           
+
             $job->update([
                 'exclude_users' => $excludeUsers,
                 ]);
 
-            $client = User::where('id',$job->poster_id)->first();
-            $worker = User::where('id' ,$application->users_id)->first();
-            if (isset($worker->fcm_token) && !empty($worker->fcm_token)) {
-                $deviceToken = $worker->fcm_token;
-                $title = 'Job Offer Reject';
-                $body = $client->first_name.' '.$client->last_name.' has reject for your job '.$job->title;
+//            $client = User::where('id',$job->poster_id)->first();
+//            $worker = User::where('id' ,$application->users_id)->first();
+//            if (isset($worker->fcm_token) && !empty($worker->fcm_token)) {
+//                $deviceToken = $worker->fcm_token;
+//                $title = 'Job Offer Reject';
+//                $body = $client->first_name.' '.$client->last_name.' has reject for your job '.$job->title;
+//
+//                Notifications::create([
+//                    'users_id'             => $job->poster_id,
+//                    'title'                => $title,
+//                    'status'               => 0,
+//                    'message'              => $body,
+//                    'notification_type_id' => NotificationTypes::OFFER_REJECT_BY_CLIENT,
+//                ]);
+//
+//                $this->firebaseService->sendNotification($deviceToken, $title, $body);
+//            }
 
-                Notifications::create([
-                    'users_id'             => $job->poster_id,
-                    'title'                => $title,
-                    'status'               => 0,
-                    'message'              => $body,
-                    'notification_type_id' => NotificationTypes::OFFER_REJECT_BY_CLIENT,
-                ]);
-
-                $this->firebaseService->sendNotification($deviceToken, $title, $body);
-            }
-            
             $application->delete();
             DB::commit();
 
@@ -789,7 +790,7 @@ class JobPostingController extends BaseController // New Change
             return response()->json($exception->getMessage());
         }
     }
-    
+
     public function recent_search_save(Request $request)
     {
         $success = $request->userInput;
@@ -952,27 +953,6 @@ class JobPostingController extends BaseController // New Change
                     'client_id' => $jobData->poster_id,
                     'status'  => $jobData->status,
                     'decline_by'  => $application->users_id,
-                    'type' => JobHistory::WORKER
-                ]);
-
-
-                //create history for client
-                JobHistory::updateOrCreate(
-                    [
-                        'job_id'  => $jobData->id,
-                        'worker_id' => $application->users_id,
-                        'client_id' => $jobData->poster_id,
-                        'status' => Job::HIRED,
-                        'decline_by'  => $jobData->poster_id,
-                    ]
-                    ,[
-                    'reason'  => @$data->reason,
-                    'job_id'  => $jobData->id,
-                    'worker_id' => $application->users_id,
-                    'client_id' => $jobData->poster_id,
-                    'status'  => $jobData->status,
-                    'decline_by'  => $jobData->poster_id,
-                    'type' => JobHistory::WORKER
                 ]);
 
 
@@ -992,7 +972,7 @@ class JobPostingController extends BaseController // New Change
                     'status' => Job::NEW,
                     'exclude_users' => $excludeUsers
                 ]);
-                
+
                 $client = User::where('id',$jobData->poster_id)->first();
                 $worker = User::where('id' ,$application->users_id)->first();
                 if (isset($client->fcm_token) && !empty($client->fcm_token)) {
@@ -1013,17 +993,17 @@ class JobPostingController extends BaseController // New Change
                 $application->delete();
             } else {
                 DB::table('jobs')->whereNull('deleted_at')->where('id', $data->jobId)->update(['status' => $data->status]);
-            }     
+            }
             DB::commit();
             $statusMsg = $data->status == Job::DECLINE ? 'decline' : 'accept';
-            
+
             return response()->json("job $statusMsg successfully");
         }catch (\Exception $exception){
             DB::rollBack();
             return response()->json($exception->getMessage(), $exception->getCode());
         }
     }
-    
+
     // reject in progress job by worker
     public function rejectJobInProgressByWorker(Request $request)
     {
@@ -1086,7 +1066,7 @@ class JobPostingController extends BaseController // New Change
                     'status' => Job::CLOSE,
                     'exclude_users' => $excludeUsers
                 ]);
-                
+
 //                $client = User::where('id',$jobData->poster_id)->first();
 //                $worker = User::where('id' ,$application->users_id)->first();
 //                if (isset($client->fcm_token) && !empty($client->fcm_token)) {
@@ -1107,7 +1087,7 @@ class JobPostingController extends BaseController // New Change
                 $application->delete();
             DB::commit();
             $statusMsg = $request->status == Job::DECLINE ? 'decline' : 'accept';
-            
+
             return response()->json("job $statusMsg successfully");
         }catch (\Exception $exception){
             DB::rollBack();
@@ -1254,7 +1234,7 @@ class JobPostingController extends BaseController // New Change
         $worker_id = DB::table('applications')
             ->where('jobs_id', $request->job_id)
             ->value('users_id');
-        
+
         Job::findOrFail($request->job_id)->update(['status' => Job::COMPLETE]);
 
         $completedData = Payment::create([
@@ -1368,7 +1348,7 @@ class JobPostingController extends BaseController // New Change
             ->get();
         return response()->json($data);
     }
-    
+
     public function destroy($id){
         $job = Job::where('id', $id)->first();
         if (empty($job)){

@@ -50,7 +50,7 @@ Route::group([
     //hire worker by client
     //reject worker by client
     //accept client offer by worker
-    
+
 //client decline job of worker
 //    Route::post('jobs/decline/client', [JobPostingController::class, 'JobDeclineByClient']);
 //hire by client if intrested
@@ -60,7 +60,7 @@ Route::group([
 //acce worker if intrest of client offer
 //    Route::post('jobs/accept/worker', [JobPostingController::class, 'JobDeclineByWorker']);
 
-    //worker decline job accept offer time 
+    //worker decline job accept offer time
     Route::get('get-accept-offer-decline-jobs', [JobPostingController::class, 'geWorkerDeclineJob']);
 
     //get client decline job only not worker
@@ -68,6 +68,9 @@ Route::group([
 
     //get all client decline job worker or client
     Route::get('get-decline-client-or-worker-jobs', [JobPostingController::class, 'getDeclineClientOrWorkerJobs']);
+
+    Route::get('get-in-progress-decline-jobs-by-client',[JobPostingController::class, 'getInProgressDeclineJobByClient']);
+    Route::get('get-in-progress-decline-jobs-by-worker',[JobPostingController::class, 'getInProgressDeclineJobByWorker']);
 
     //worker to client request information some modify
     Route::post('request-information', [JobPostingController::class, 'requestInformation']);
@@ -83,7 +86,7 @@ Route::group([
 
     //reject in progress job by worker
     Route::post('decline-in-progress-job-by-worker', [JobPostingController::class, 'rejectJobInProgressByWorker']);
-    
+
     Route::post('reject-complete-hire', [JobPostingController::class, 'rejectWorkerByClient']);
     Route::get('job-list/{start}/{status}', [JobPostingController::class, 'job_list']);
     Route::post('complete-hire', [JobPostingController::class, 'complete_hire']);
@@ -146,7 +149,7 @@ Route::post('/transfer-to-user/{id}',[PaymentMethodController::class, 'createTra
 Route::post('/create-transfer-money/{id}', [PaymentMethodController::class, 'transferToBankAccount']);
 Route::post('/create-bank-stripe-account/{id}', [PaymentMethodController::class, 'linkBankAccount']);
 
-//create account 
+//create account
 Route::post('/create-vendor-stripe-account/{id}', [PaymentMethodController::class, 'createStripeAccount']);
 
 //connect account or link account to stripe
@@ -156,7 +159,7 @@ Route::post('/create-vendor-stripe-account/{id}', [PaymentMethodController::clas
 
 //transfer bank account money
 
-//delete account 
+//delete account
 Route::delete('/delete-stripe-account/{id}', [PaymentMethodController::class, 'deleteStripeAccount']);
 
 Route::post('messages', [ChatController::class, 'sendMessage']);
