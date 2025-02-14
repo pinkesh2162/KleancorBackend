@@ -31,34 +31,6 @@ class JobPostingController extends BaseController // New Change
         $this->firebaseService = $firebaseService;
     }
 
-//    public function index(Request $request)
-//    {
-//        $jobs = Job::with([
-//            'location:id,name,zip',
-//            'category:id,name,picture',
-//            'user:id,avatar'
-//        ])
-//            ->select([
-//                'jobs.id',
-//                'jobs.title',
-//                'jobs.job_type',
-//                'jobs.price',
-//                'jobs.poster_id',
-//                'jobs.locations_id',
-//                'jobs.categories_id',
-//                'jobs.status',
-//                DB::raw('(SELECT COUNT(j.id) FROM jobs AS j WHERE j.poster_id = jobs.poster_id AND j.status < 5) AS totalJobs'),
-//                DB::raw("IFNULL(ROUND((jobs.client_rating1 + jobs.client_rating2 + jobs.client_rating3) / 3, 2), 0) AS totalStar")
-//            ])
-//            ->filter($request->only(['status', 'exclude_user']))
-//            ->skip($request->start)
-//            ->take($this->settings->job_limit)
-//            ->orderBy("jobs.id", "desc")
-//            ->get();
-//
-//        return response()->json($jobs);
-//    }
-
     public function store(Request $request)
     {
         $data = $request->all();
@@ -179,106 +151,6 @@ class JobPostingController extends BaseController // New Change
         }
     }
 
-
-//    public function jobApply(Request $request)
-//    {
-//        DB::beginTransaction();
-//        try {
-//            $input = $request->all();
-//            $applications = Application::create([
-//                'jobs_id'  => $input['job_id'],
-//                'users_id' => $input['user_id'],
-//            ]);
-//
-//            $user = User::findOrFail((int)$input['user_id']);
-//            $job = Job::with('user')->findOrFail($input['job_id']);
-//            if (isset($job->fcm_token) && $job->fcm_token != null) {
-//                $deviceToken = $job->fcm_token;
-//                $title = 'New Job Application';
-//                $body = $user->first_name.' '.$user->last_name.' has applied for your job '.$job->title;
-//
-//                Notifications::create([
-//                    'users_id'             => $job->poster_id,
-//                    'title'                => $title,
-//                    'status'               => 0,
-//                    'message'              => $body,
-//                    'notification_type_id' => NotificationTypes::NEW_JOB_APPLICATION,
-//                ]);
-//
-//                $this->firebaseService->sendNotification($deviceToken, $title, $body);
-//            }
-//
-//            $excludeUsers = $job->exclude_users;
-//            if (empty($excludeUsers)) {
-//                $excludeUsers = [(int)$input['user_id']];
-//            } else {
-//                array_push($excludeUsers, $input['user_id']);
-//            }
-//
-//            $job->update(['exclude_users' => $excludeUsers]);
-//
-//            DB::commit();
-//            return response()->json($applications);
-//        }catch (\Exception $exception){
-//            DB::rollBack();
-//            return response()->json($exception->getMessage(), $exception->getCode());
-//        }
-//    }
-
-    //proposal list
-//    public function jobApplyList(Request $request){
-//        $users = User::whereHas('application', function($query)use($request){
-//            return $query->where('jobs_id',$request->job_id);
-//        })
-//            ->select('id','first_name','last_name','about','gender','avatar')
-//            ->orderBy("id", "asc")->get();
-//
-//        return response()->json($users);
-//    }
-
-//    hire worker
-//    public function hireWorkerByClient(Request $request)
-//    {
-//        $input = $request->all();
-//        $job = Job::findOrFail($input['job_id']);
-//        $job->update([
-//            'awards_id'   => $input['user_id'],
-//            'final_price' => $input['amount'],
-//            'status'      => Job::HIRED,
-//        ]);
-//
-//        return response([
-//            'message' => 'Job Updated Successfully',
-//        ], 200);
-//    }
-
-    //accept client job by worker
-//    public function acceptClientJobOffer(Request $request)
-//    {
-//        Job::findOrFail($request->job_id)->update(['status' => Job::ACCEPT]);
-//    }
-//
-//    //reject client job by worker
-//    public function rejectClientJobOffer(Request $request){
-//        $job = Job::findOrFail($request->job_id);
-//
-//        $excludeUsers = $job->exclude_users;
-//        if (empty($excludeUsers)) {
-//            $excludeUsers = [$job->awards_id];
-//        } else {
-//            array_push($excludeUsers, $job->awards_id);
-//        }
-//
-//        Application::where('jobs_id', $data->jobId)->where('users_id', $job->awards_id)->delete();
-//
-//        DB::table('jobs')->whereNull('deleted_at')->where('id', $data->jobId)->update([
-//            'awards_id' => null,
-//            'final_price' => null,
-//            'status' => Job::NEW,
-//            'exclude_users' => $excludeUsers
-//        ]);
-//    }
-
     public function requestInformation(Request $request)
     {
         $job = Job::findOrFail($request->jobId);
@@ -336,20 +208,6 @@ class JobPostingController extends BaseController // New Change
             ->with(['job','worker'])
             ->skip($request->start)->take($this->settings->job_limit)
             ->get();
-
-//        $jobs = Job::whereHas('jobHistory', function ($query)use($request){
-//            return $query->where('status', Job::NEW)->where('client_id',$request->userId);
-//        })->with('jobHistory', function ($query)use($request){
-//                return $query
-//                    ->where('status', Job::NEW)
-//                    ->where('client_id',$request->userId)
-//                    ->with('client','worker');
-//            })
-//            ->skip($request->start)->take($this->settings->job_limit)
-//            ->where('status', Job::NEW)
-//            ->where('poster_id', @$request->userId)
-//            ->orderBy("id", "desc")
-//            ->get();
 
         return response()->json($jobs);
     }
@@ -1086,9 +944,8 @@ class JobPostingController extends BaseController // New Change
 //                }
                 $application->delete();
             DB::commit();
-            $statusMsg = $request->status == Job::DECLINE ? 'decline' : 'accept';
 
-            return response()->json("job $statusMsg successfully");
+            return response()->json("job rejected successfully");
         }catch (\Exception $exception){
             DB::rollBack();
             return response()->json($exception->getMessage(), $exception->getCode());
