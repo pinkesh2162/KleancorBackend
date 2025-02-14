@@ -82,7 +82,7 @@ class JobPostingController extends BaseController // New Change
         public function job_apply(Request $request)
     {
         $success = $request->userInput;
-        $success = json_encode($success);
+//        $success = json_encode($success);
         $data = json_decode($success);
 
         $arr = [
@@ -467,7 +467,7 @@ class JobPostingController extends BaseController // New Change
     public function complete_hire(Request $request)
     {
         $success = $request->userInput;
-        $success = json_encode($success);
+//        $success = json_encode($success);
         $data = json_decode($success);
         $job = Job::where('id', $data->jobId)
             ->update([
@@ -786,7 +786,7 @@ class JobPostingController extends BaseController // New Change
     public function accept_offer(Request $request)
     {
         $success = $request->userInput;
-        $success = json_encode($success);
+//        $success = json_encode($success);
         $data = json_decode($success);
         DB::beginTransaction();
         try {
